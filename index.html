@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Climbing Log</title>
+  <link rel="manifest" href="manifest.json" />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header>
+    <h1>Climbing Log</h1>
+    <p>Mobile dataframe row generator</p>
+  </header>
+
+  <main>
+    <section class="card">
+      <h2>Session header</h2>
+
+      <label>Date
+        <input id="date" type="date" />
+      </label>
+
+      <label>Session type
+        <select id="session_type">
+          <option value="G">Gym</option>
+          <option value="R">Route climbing</option>
+          <option value="B">Boulder climbing</option>
+          <option value="RT">Route training</option>
+          <option value="BT">Boulder training</option>
+        </select>
+      </label>
+
+      <label>Site
+        <input id="site" type="text" placeholder="Home, gym, crag..." />
+      </label>
+
+      <label>Duration min
+        <input id="duration_min" type="number" inputmode="numeric" placeholder="90" />
+      </label>
+
+      <label>Session RPE
+        <select id="session_rpe">
+          <option value=""></option>
+          <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+        </select>
+      </label>
+
+      <label>Focus
+        <input id="focus" type="text" placeholder="Strength, power, endurance..." />
+      </label>
+
+      <label>Comments
+        <textarea id="comments" rows="2" placeholder="Optional"></textarea>
+      </label>
+    </section>
+
+    <section class="card">
+      <h2>Add row</h2>
+
+      <label>Entry type
+        <select id="entry_type">
+          <option value="exercise">Exercise</option>
+          <option value="climb">Climb</option>
+        </select>
+      </label>
+
+      <div id="exercise_form">
+        <label>Block
+          <select id="block"></select>
+        </label>
+
+        <label>Exercise
+          <select id="exercise"></select>
+        </label>
+
+        <label>Sets
+          <input id="sets" type="number" inputmode="numeric" placeholder="5" />
+        </label>
+
+        <label>Rep
+          <input id="rep" type="number" inputmode="numeric" placeholder="4" />
+        </label>
+
+        <label>External load
+          <input id="external_load" type="text" placeholder="BW, +20, 80kg, band..." />
+        </label>
+
+        <label>RPE
+          <select id="ex_rpe">
+            <option value=""></option>
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          </select>
+        </label>
+      </div>
+
+      <div id="climb_form" class="hidden">
+        <label>Grade
+          <select id="grade"></select>
+        </label>
+
+        <label>Style
+          <select id="style">
+            <option value="S">Slab</option>
+            <option value="V">Vertical</option>
+            <option value="OH">Overhang</option>
+          </select>
+        </label>
+
+        <label>Length
+          <select id="length">
+            <option value="SH">Short</option>
+            <option value="M" selected>Medium</option>
+            <option value="L">Long</option>
+            <option value="EL">Extra long</option>
+          </select>
+        </label>
+
+        <label>Attempts
+          <input id="attempts" type="number" inputmode="numeric" placeholder="3" />
+        </label>
+
+        <label>Mode
+          <select id="mode">
+            <option value="F">Flash</option>
+            <option value="O">Onsight</option>
+            <option value="R">Redpoint</option>
+          </select>
+        </label>
+
+        <label>Done
+          <select id="done">
+            <option value="Y">Yes</option>
+            <option value="N">No</option>
+          </select>
+        </label>
+
+        <label>RPE
+          <select id="climb_rpe">
+            <option value=""></option>
+            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          </select>
+        </label>
+      </div>
+
+      <button id="add_row">Add row</button>
+    </section>
+
+    <section class="card">
+      <h2>Current data</h2>
+      <div class="buttons">
+        <button id="export_csv">Export CSV</button>
+        <button id="clear_data" class="danger">Clear all</button>
+      </div>
+
+      <div class="table-wrap">
+        <table id="preview_table">
+          <thead></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>
