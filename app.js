@@ -112,7 +112,7 @@ const BOULDER_GRADES = [
 
 const COLUMNS = [
   "session_id", "date", "duration_min", "site", "session_type",
-  "session_rpe", "focus", "comments",
+  "session_rpe", "focus", "focus_level", "comments",
   "entry_type", "block", "exercise", "sets", "rep", "external_load",
   "grade", "style", "length", "attempts", "mode", "done", "rpe"
 ];
@@ -212,6 +212,7 @@ function getHeader() {
     session_type: $("session_type").value,
     session_rpe: $("session_rpe").value,
     focus: $("focus").value,
+    focus_level: $("focus_level").value,
     comments: $("comments").value
   };
 }

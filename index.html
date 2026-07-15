@@ -46,9 +46,23 @@
         </select>
       </label>
 
-      <label>Focus
-        <input id="focus" type="text" placeholder="Strength, power, endurance..." />
+      <label>Session focus
+        <input
+          id="focus"
+          type="text"
+          placeholder="Strength, power, endurance, technique..."
+        />
       </label>
+
+      <label>Focus level
+      <select id="focus_level">
+        <option value=""></option>
+        <option value="1">1 — Very distracted</option>
+        <option value="2">2 — Somewhat distracted</option>
+        <option value="3">3 — Focused</option>
+        <option value="4">4 — Fully focused</option>
+      </select>
+    </label>
 
       <label>Comments
         <textarea id="comments" rows="2" placeholder="Optional"></textarea>
