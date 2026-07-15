@@ -1,20 +1,98 @@
 const STORAGE_KEY = "climbing_log_rows_v1";
 
 const BLOCKS = {
-  WU: ["CARC", "Récup active", "Pull-up", "Scapular pull-up"],
-  PH: ["Rotator cuff external rotation", "Rotator cuff internal rotation", "Y-T-W raise", "Face pull"],
-  PO: ["Gullich (force)", "Force de contact / explosivité / vitesse"],
-  CO: ["Abdos au sol", "Plank", "Side plank", "Hanging knee raise", "Hanging leg raise", "Ab wheel"],
-  FI: ["Force doigts", "Force-endurance doigts", "Gullich (force)", "Gullich (force-endurance)"],
-  VP: ["Pull-up", "Weighted pull-up", "Chin-up", "Lock-off", "One-arm lock-off assisted"],
-  HP: ["Row", "Ring row", "Face pull"],
-  VPu: ["Dips", "Weighted dips", "Overhead press", "Force max triceps"],
-  HPu: ["Push-up", "Ring push-up", "Bench press"],
-  AR: ["Force max biceps", "Excentrique Biceps", "Pletnev biceps"],
-  HI: ["Deadlift", "Romanian deadlift", "Single-leg RDL", "Hip thrust", "Nordic curl"],
-  SQ: ["Back squat", "Front squat", "Split squat", "Bulgarian split squat"],
-  LG: ["Calf raise", "Tibialis raise"],
-  RC: ["Récup active", "CARC"]
+  "Warm-up": [
+    "CARC",
+    "Récup active",
+    "Pull-up",
+    "Scapular pull-up"
+  ],
+
+  "Prehab": [
+    "Rotator cuff external rotation",
+    "Rotator cuff internal rotation",
+    "Y-T-W raise",
+    "Face pull"
+  ],
+
+  "Power": [
+    "Gullich (force)",
+    "Force de contact / explosivité / vitesse"
+  ],
+
+  "Core": [
+    "Abdos au sol",
+    "Plank",
+    "Side plank",
+    "Hanging knee raise",
+    "Hanging leg raise",
+    "Ab wheel"
+  ],
+
+  "Fingers": [
+    "Force doigts",
+    "Force-endurance doigts",
+    "Gullich (force)",
+    "Gullich (force-endurance)"
+  ],
+
+  "Vertical pull": [
+    "Pull-up",
+    "Weighted pull-up",
+    "Chin-up",
+    "Lock-off",
+    "One-arm lock-off assisted"
+  ],
+
+  "Horizontal pull": [
+    "Row",
+    "Ring row",
+    "Face pull"
+  ],
+
+  "Vertical push": [
+    "Dips",
+    "Weighted dips",
+    "Overhead press",
+    "Force max triceps"
+  ],
+
+  "Horizontal push": [
+    "Push-up",
+    "Ring push-up",
+    "Bench press"
+  ],
+
+  "Arms": [
+    "Force max biceps",
+    "Excentrique Biceps",
+    "Pletnev biceps"
+  ],
+
+  "Hinge": [
+    "Deadlift",
+    "Romanian deadlift",
+    "Single-leg RDL",
+    "Hip thrust",
+    "Nordic curl"
+  ],
+
+  "Squat / lunge": [
+    "Back squat",
+    "Front squat",
+    "Split squat",
+    "Bulgarian split squat"
+  ],
+
+  "Lower leg": [
+    "Calf raise",
+    "Tibialis raise"
+  ],
+
+  "Recovery": [
+    "Récup active",
+    "CARC"
+  ]
 };
 
 const ROUTE_GRADES = [
@@ -68,9 +146,22 @@ function setOptions(select, values) {
   });
 }
 
+function updateBlockOptions() {
+  setOptions(
+    $("block"),
+    Object.keys(BLOCKS)
+  );
+
+  updateExerciseOptions();
+}
+
 function updateExerciseOptions() {
-  const block = $("block").value;
-  setOptions($("exercise"), BLOCKS[block] || []);
+  const selectedBlock = $("block").value;
+
+  setOptions(
+    $("exercise"),
+    BLOCKS[selectedBlock] || []
+  );
 }
 
 function updateGradeOptions() {
@@ -81,13 +172,33 @@ function updateGradeOptions() {
 
 function updateEntryVisibility() {
   const sessionType = $("session_type").value;
+  const entryTypeSelect = $("entry_type");
+  const entryTypeLabel = $("entry_type_label");
 
-  if (sessionType === "G") $("entry_type").value = "exercise";
-  if (sessionType === "R" || sessionType === "B") $("entry_type").value = "climb";
+  if (sessionType === "G") {
+    entryTypeSelect.value = "exercise";
+    entryTypeSelect.disabled = true;
+    entryTypeLabel.classList.add("hidden");
+  } else if (sessionType === "R" || sessionType === "B") {
+    entryTypeSelect.value = "climb";
+    entryTypeSelect.disabled = true;
+    entryTypeLabel.classList.add("hidden");
+  } else {
+    entryTypeSelect.disabled = false;
+    entryTypeLabel.classList.remove("hidden");
+  }
 
-  const finalType = $("entry_type").value;
-  $("exercise_form").classList.toggle("hidden", finalType !== "exercise");
-  $("climb_form").classList.toggle("hidden", finalType !== "climb");
+  const entryType = entryTypeSelect.value;
+
+  $("exercise_form").classList.toggle(
+    "hidden",
+    entryType !== "exercise"
+  );
+
+  $("climb_form").classList.toggle(
+    "hidden",
+    entryType !== "climb"
+  );
 
   updateGradeOptions();
 }
@@ -105,6 +216,24 @@ function getHeader() {
   };
 }
 
+function addSetBlock(sets = "", rep = "", load = "") {
+  const div = document.createElement("div");
+  div.className = "set-block";
+
+  div.innerHTML = `
+    <input class="block_sets" type="number" inputmode="numeric" placeholder="Sets" value="${sets}">
+    <input class="block_rep" type="number" inputmode="numeric" placeholder="Rep" value="${rep}">
+    <input class="block_load" type="text" placeholder="Load" value="${load}">
+    <button type="button" class="remove_set_block">×</button>
+  `;
+
+  div.querySelector(".remove_set_block").addEventListener("click", () => {
+    div.remove();
+  });
+
+  $("set_blocks").appendChild(div);
+}
+
 function addRow() {
   const header = getHeader();
   const entryType = $("entry_type").value;
@@ -113,14 +242,28 @@ function addRow() {
   Object.assign(row, header);
   row.entry_type = entryType;
 
-  if (entryType === "exercise") {
+if (entryType === "exercise") {
+  const setBlocks = document.querySelectorAll(".set-block");
+
+  setBlocks.forEach(blockEl => {
+    let row = Object.fromEntries(COLUMNS.map(c => [c, ""]));
+    Object.assign(row, header);
+
+    row.entry_type = "exercise";
     row.block = $("block").value;
     row.exercise = $("exercise").value;
-    row.sets = $("sets").value;
-    row.rep = $("rep").value;
-    row.external_load = $("external_load").value;
+    row.sets = blockEl.querySelector(".block_sets").value;
+    row.rep = blockEl.querySelector(".block_rep").value;
+    row.external_load = blockEl.querySelector(".block_load").value;
     row.rpe = $("ex_rpe").value;
-  } else {
+
+    rows.push(row);
+  });
+
+  saveRows();
+  renderTable();
+  return;
+} else {
     row.exercise = header.session_type === "B" || header.session_type === "BT" ? "Bloc" : "Route";
     row.grade = $("grade").value;
     row.style = $("style").value;
@@ -178,10 +321,12 @@ function renderTable() {
 }
 
 function init() {
-  $("date").value = new Date().toISOString().slice(0,10);
+  $("add_set_block").addEventListener("click", () => addSetBlock());
+  addSetBlock();
 
-  setOptions($("block"), Object.keys(BLOCKS));
-  updateExerciseOptions();
+  $("date").value = new Date().toISOString().slice(0, 10);
+
+  updateBlockOptions();
   updateGradeOptions();
   updateEntryVisibility();
 

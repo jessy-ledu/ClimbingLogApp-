@@ -58,7 +58,8 @@
     <section class="card">
       <h2>Add row</h2>
 
-      <label>Entry type
+      <label id="entry_type_label">
+      Entry type
         <select id="entry_type">
           <option value="exercise">Exercise</option>
           <option value="climb">Climb</option>
@@ -74,17 +75,9 @@
           <select id="exercise"></select>
         </label>
 
-        <label>Sets
-          <input id="sets" type="number" inputmode="numeric" placeholder="5" />
-        </label>
+<div id="set_blocks"></div>
 
-        <label>Rep
-          <input id="rep" type="number" inputmode="numeric" placeholder="4" />
-        </label>
-
-        <label>External load
-          <input id="external_load" type="text" placeholder="BW, +20, 80kg, band..." />
-        </label>
+<button type="button" id="add_set_block">+ Add set block</button>
 
         <label>RPE
           <select id="ex_rpe">
