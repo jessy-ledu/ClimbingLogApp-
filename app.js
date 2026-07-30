@@ -114,7 +114,8 @@ const COLUMNS = [
   "session_id", "date", "duration_min", "site", "session_type",
   "session_rpe", "focus", "focus_level", "comments",
   "entry_type", "block", "exercise", "sets", "rep", "external_load",
-  "grade", "style", "length", "attempts", "mode", "done", "rpe"
+  "grade", "style", "length", "attempts", "mode", "done", "rpe",
+  "entry_comment"
 ];
 
 let rows = loadRows();
@@ -257,11 +258,14 @@ if (entryType === "exercise") {
     row.rep = blockEl.querySelector(".block_rep").value;
     row.external_load = blockEl.querySelector(".block_load").value;
     row.rpe = $("ex_rpe").value;
-
+    row.entry_comment = $("exercise_comment").value;
     rows.push(row);
   });
 
   saveRows();
+
+  $("exercise_comment").value = "";
+
   renderTable();
   return;
 } else {
@@ -274,9 +278,13 @@ if (entryType === "exercise") {
     row.mode = $("mode").value;
     row.done = $("done").value;
     row.rpe = $("climb_rpe").value;
+    row.entry_comment = $("climb_comment").value;
   }
 
   rows.push(row);
+
+  $("climb_comment").value = "";
+
   saveRows();
   renderTable();
 }
