@@ -258,13 +258,13 @@ if (entryType === "exercise") {
     row.rep = blockEl.querySelector(".block_rep").value;
     row.external_load = blockEl.querySelector(".block_load").value;
     row.rpe = $("ex_rpe").value;
-    row.entry_comment = $("exercise_comment").value;
+    row.entry_comment = $("entry_comment").value;
     rows.push(row);
   });
 
   saveRows();
 
-  $("exercise_comment").value = "";
+  $("entry_comment").value = "";
 
   renderTable();
   return;
@@ -278,12 +278,12 @@ if (entryType === "exercise") {
     row.mode = $("mode").value;
     row.done = $("done").value;
     row.rpe = $("climb_rpe").value;
-    row.entry_comment = $("climb_comment").value;
+    row.entry_comment = $("entry_comment").value;
   }
 
   rows.push(row);
 
-  $("climb_comment").value = "";
+  $("entry_comment").value = "";
 
   saveRows();
   renderTable();
