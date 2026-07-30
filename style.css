@@ -103,4 +103,15 @@ th { background: #2a2a2a; }
   }
 
   textarea { min-height: 46px; }
+  .set-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1.5fr auto;
+  gap: 6px;
+  margin-bottom: 8px;
+}
+
+.set-block button {
+  width: 42px;
+  background: #b93737;
+}
 }
