@@ -1,7 +1,8 @@
-const CACHE_NAME = "climbing-log-v1";
+const CACHE_NAME = "climbing-log-v5";
 const FILES_TO_CACHE = [
   "./",
   "./index.html",
+  "./exercise_catalog.js",
   "./style.css",
   "./app.js",
   "./manifest.json"
