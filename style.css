@@ -114,4 +114,22 @@ th { background: #2a2a2a; }
   width: 42px;
   background: #b93737;
 }
+
+.checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+}
+
+.checkbox-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    cursor: pointer;
+}
+
+.checkbox-label span {
+    margin: 0;
+}
 }

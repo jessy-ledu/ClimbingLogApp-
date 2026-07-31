@@ -21,7 +21,8 @@ const COLUMNS = [
   "session_id", "date", "climb_type", "grade",  "max_grade",  "max_grade_system", 
   "duration_min", "site", "session_type",
   "session_rpe", "focus", "focus_level", "comments",
-  "entry_type", "block", "exercise", "sets", "rep", "external_load",
+  "entry_type", "block", "exercise", "strength_intensity_range",
+  "custom_strength_intensity", "explosive_strength", "sets", "rep", "external_load",
   "grade", "style", "length", "attempts", "mode", "done", "rpe",
   "entry_comment"
 ];
@@ -30,6 +31,20 @@ const MAX_BOULDER_GRADE_KEY = "climbingLog_maxBoulderGrade";
 const MAX_ROUTE_GRADE_KEY = "climbingLog_maxRouteGrade";
 
 let rows = loadRows();
+
+function updateCustomIntensityVisibility() {
+  const isCustom =
+    $("strength_intensity_range").value === "custom";
+
+  $("custom_intensity_container").classList.toggle(
+    "hidden",
+    !isCustom
+  );
+
+  if (!isCustom) {
+    $("custom_strength_intensity").value = "";
+  }
+}
 
 function loadMaxGrades() {
   const savedBoulderGrade =
@@ -251,6 +266,9 @@ if (entryType === "exercise") {
     row.entry_type = "exercise";
     row.block = $("block").value;
     row.exercise = $("exercise").value;
+    row.strength_intensity_range =$("strength_intensity_range").value;
+    row.custom_strength_intensity =$("strength_intensity_range").value === "custom"? $("custom_strength_intensity").value: "";
+    row.explosive_strength =$("explosive_strength").checked;
     row.sets = blockEl.querySelector(".block_sets").value;
     row.rep = blockEl.querySelector(".block_rep").value;
     row.external_load = blockEl.querySelector(".block_load").value;
@@ -259,6 +277,13 @@ if (entryType === "exercise") {
     rows.push(row);
   });
 
+  if (
+  $("strength_intensity_range").value === "custom" &&
+  $("custom_strength_intensity").value === ""
+) {
+  alert("Enter a custom intensity value.");
+  return;
+}
   saveRows();
 
   $("entry_comment").value = "";
@@ -350,11 +375,13 @@ function init() {
   updateBlockOptions();
   updateGradeOptions();
   updateEntryVisibility();
+  updateCustomIntensityVisibility();
   loadMaxGrades();
   $("save_max_grades").addEventListener("click", saveMaxGrades);
   $("block").addEventListener("change", updateExerciseOptions);
   $("session_type").addEventListener("change", updateEntryVisibility);
   $("entry_type").addEventListener("change", updateEntryVisibility);
+  $("strength_intensity_range").addEventListener("change", updateCustomIntensityVisibility);
   $("add_row").addEventListener("click", addRow);
   $("export_csv").addEventListener("click", exportCSV);
   $("clear_data").addEventListener("click", clearData);
