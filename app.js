@@ -111,14 +111,104 @@ const BOULDER_GRADES = [
 ];
 
 const COLUMNS = [
-  "session_id", "date", "duration_min", "site", "session_type",
+  "session_id", "date", "climb_type", "grade",  "max_grade",  "max_grade_system", 
+  "duration_min", "site", "session_type",
   "session_rpe", "focus", "focus_level", "comments",
   "entry_type", "block", "exercise", "sets", "rep", "external_load",
   "grade", "style", "length", "attempts", "mode", "done", "rpe",
   "entry_comment"
 ];
 
+const MAX_BOULDER_GRADE_KEY = "climbingLog_maxBoulderGrade";
+const MAX_ROUTE_GRADE_KEY = "climbingLog_maxRouteGrade";
+
 let rows = loadRows();
+
+function loadMaxGrades() {
+  const savedBoulderGrade =
+    localStorage.getItem(MAX_BOULDER_GRADE_KEY) || "";
+
+  const savedRouteGrade =
+    localStorage.getItem(MAX_ROUTE_GRADE_KEY) || "";
+
+  $("max_boulder_grade").value = savedBoulderGrade;
+  $("max_route_grade").value = savedRouteGrade;
+
+  updateMaxGradeStatus();
+}
+
+function saveMaxGrades() {
+  const maxBoulderGrade = $("max_boulder_grade").value;
+  const maxRouteGrade = $("max_route_grade").value;
+
+  localStorage.setItem(
+    MAX_BOULDER_GRADE_KEY,
+    maxBoulderGrade
+  );
+
+  localStorage.setItem(
+    MAX_ROUTE_GRADE_KEY,
+    maxRouteGrade
+  );
+
+  updateMaxGradeStatus();
+}
+
+function updateMaxGradeStatus() {
+  const maxBoulderGrade =
+    localStorage.getItem(MAX_BOULDER_GRADE_KEY) || "not set";
+
+  const maxRouteGrade =
+    localStorage.getItem(MAX_ROUTE_GRADE_KEY) || "not set";
+
+  $("max_grade_status").textContent =
+    `Saved: boulder ${maxBoulderGrade} · route ${maxRouteGrade}`;
+}
+
+function getClimbContext() {
+  const sessionType = $("session_type").value;
+
+  if (sessionType === "B" || sessionType === "BT") {
+    return {
+      climb_type: "boulder",
+      max_grade: localStorage.getItem(MAX_BOULDER_GRADE_KEY) || "",
+      max_grade_system: "fontainebleau"
+    };
+  }
+
+  if (sessionType === "R" || sessionType === "RT") {
+    return {
+      climb_type: "route",
+      max_grade: localStorage.getItem(MAX_ROUTE_GRADE_KEY) || "",
+      max_grade_system: "french"
+    };
+  }
+
+  return {
+    climb_type: "",
+    max_grade: "",
+    max_grade_system: ""
+  };
+}
+
+function validateClimbMaxGrade(climbContext) {
+  if (!climbContext.climb_type) {
+    alert("The session type does not identify route or boulder climbing.");
+    return false;
+  }
+
+  if (!climbContext.max_grade) {
+    const gradeType =
+      climbContext.climb_type === "boulder"
+        ? "maximum boulder grade"
+        : "maximum route grade";
+
+    alert(`Please save your ${gradeType} first.`);
+    return false;
+  }
+
+  return true;
+}
 
 function $(id) { return document.getElementById(id); }
 
@@ -269,17 +359,32 @@ if (entryType === "exercise") {
   renderTable();
   return;
 } else {
-    row.exercise = header.session_type === "B" || header.session_type === "BT" ? "Bloc" : "Route";
-    row.grade = $("grade").value;
-    row.style = $("style").value;
-    row.length = $("length").value;
-    row.attempts = $("attempts").value;
-    row.rep = $("attempts").value;
-    row.mode = $("mode").value;
-    row.done = $("done").value;
-    row.rpe = $("climb_rpe").value;
-    row.entry_comment = $("entry_comment").value;
+const climbContext = getClimbContext();
+  if (!validateClimbMaxGrade(climbContext)) {
+    return;
   }
+
+  row.exercise =
+    climbContext.climb_type === "boulder"
+      ? "Bloc"
+      : "Route";
+
+  row.climb_type = climbContext.climb_type;
+  row.grade = $("grade").value;
+
+  // Snapshot stored permanently in this row
+  row.max_grade = climbContext.max_grade;
+  row.max_grade_system = climbContext.max_grade_system;
+
+  row.style = $("style").value;
+  row.length = $("length").value;
+  row.attempts = $("attempts").value;
+  row.rep = $("attempts").value;
+  row.mode = $("mode").value;
+  row.done = $("done").value;
+  row.rpe = $("climb_rpe").value;
+  row.entry_comment = $("entry_comment").value;
+}
 
   rows.push(row);
 
@@ -338,7 +443,8 @@ function init() {
   updateBlockOptions();
   updateGradeOptions();
   updateEntryVisibility();
-
+  loadMaxGrades();
+  $("save_max_grades").addEventListener("click", saveMaxGrades);
   $("block").addEventListener("change", updateExerciseOptions);
   $("session_type").addEventListener("change", updateEntryVisibility);
   $("entry_type").addEventListener("change", updateEntryVisibility);

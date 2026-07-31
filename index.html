@@ -21,6 +21,86 @@
         <input id="date" type="date" />
       </label>
 
+      <details class="settings-section">
+  <summary>Maximum grades</summary>
+
+  <div class="form-grid">
+    <label>
+      Max boulder grade — Fontainebleau
+      <select id="max_boulder_grade">
+        <option value="">Not set</option>
+        <option value="3">3</option>
+        <option value="4">4</option>
+        <option value="4+">4+</option>
+        <option value="5">5</option>
+        <option value="5+">5+</option>
+        <option value="6A">6A</option>
+        <option value="6A+">6A+</option>
+        <option value="6B">6B</option>
+        <option value="6B+">6B+</option>
+        <option value="6C">6C</option>
+        <option value="6C+">6C+</option>
+        <option value="7A">7A</option>
+        <option value="7A+">7A+</option>
+        <option value="7B">7B</option>
+        <option value="7B+">7B+</option>
+        <option value="7C">7C</option>
+        <option value="7C+">7C+</option>
+        <option value="8A">8A</option>
+        <option value="8A+">8A+</option>
+        <option value="8B">8B</option>
+        <option value="8B+">8B+</option>
+        <option value="8C">8C</option>
+        <option value="8C+">8C+</option>
+        <option value="9A">9A</option>
+      </select>
+    </label>
+
+    <label>
+      Max route grade — French
+      <select id="max_route_grade">
+        <option value="">Not set</option>
+        <option value="3">3</option>
+        <option value="4a">4a</option>
+        <option value="4b">4b</option>
+        <option value="4c">4c</option>
+        <option value="5a">5a</option>
+        <option value="5b">5b</option>
+        <option value="5c">5c</option>
+        <option value="6a">6a</option>
+        <option value="6a+">6a+</option>
+        <option value="6b">6b</option>
+        <option value="6b+">6b+</option>
+        <option value="6c">6c</option>
+        <option value="6c+">6c+</option>
+        <option value="7a">7a</option>
+        <option value="7a+">7a+</option>
+        <option value="7b">7b</option>
+        <option value="7b+">7b+</option>
+        <option value="7c">7c</option>
+        <option value="7c+">7c+</option>
+        <option value="8a">8a</option>
+        <option value="8a+">8a+</option>
+        <option value="8b">8b</option>
+        <option value="8b+">8b+</option>
+        <option value="8c">8c</option>
+        <option value="8c+">8c+</option>
+        <option value="9a">9a</option>
+        <option value="9a+">9a+</option>
+        <option value="9b">9b</option>
+        <option value="9b+">9b+</option>
+        <option value="9c">9c</option>
+      </select>
+    </label>
+
+    <button id="save_max_grades" type="button">
+      Save maximum grades
+    </button>
+
+    <p id="max_grade_status"></p>
+  </div>
+</details>
+
       <label>Session type
         <select id="session_type">
           <option value="G">Gym</option>
@@ -43,6 +123,7 @@
         <select id="session_rpe">
           <option value=""></option>
           <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+          <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
         </select>
       </label>
 
@@ -93,10 +174,11 @@
 
 <button type="button" id="add_set_block">+ Add set block</button>
 
-        <label>RPE
+        <label>RPE (1st set)
           <select id="ex_rpe">
             <option value=""></option>
             <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
           </select>
         </label>
       </div>
@@ -142,10 +224,11 @@
           </select>
         </label>
 
-        <label>RPE
+        <label>RPE (1st run)
           <select id="climb_rpe">
             <option value=""></option>
             <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
+            <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
           </select>
         </label>
       </div>
