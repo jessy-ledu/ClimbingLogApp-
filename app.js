@@ -47,6 +47,51 @@ function updateCustomIntensityVisibility() {
   }
 }
 
+function updateDefaultIntensityRange() {
+  const exerciseName = $("exercise").value;
+  const exerciseData = EXERCISE_CATALOG[exerciseName];
+  const select = $("strength_intensity_range");
+
+  const defaultRange =
+    exerciseData?.default_intensity_range_percent_1rm?.trim() || "";
+
+  // Remove the previous dynamically added default option.
+  select
+    .querySelectorAll('option[data-exercise-default="true"]')
+    .forEach(option => option.remove());
+
+  if (!defaultRange) {
+    select.value = "";
+    updateCustomIntensityVisibility();
+    return;
+  }
+
+  // Check whether the exact Excel value already exists.
+  const existingOption = Array.from(select.options).find(
+    option => option.value === defaultRange
+  );
+
+  if (existingOption) {
+    select.value = defaultRange;
+  } else {
+    const defaultOption = document.createElement("option");
+
+    defaultOption.value = defaultRange;
+    defaultOption.textContent = `${defaultRange} — Default`;
+    defaultOption.dataset.exerciseDefault = "true";
+
+    // Insert just before Custom.
+    const customOption = Array.from(select.options).find(
+      option => option.value === "custom"
+    );
+
+    select.insertBefore(defaultOption, customOption);
+    select.value = defaultRange;
+  }
+
+  updateCustomIntensityVisibility();
+}
+
 function loadMaxGrades() {
   const savedBoulderGrade =
     localStorage.getItem(MAX_BOULDER_GRADE_KEY) || "";
@@ -176,6 +221,7 @@ function updateExerciseOptions() {
     $("exercise"),
     BLOCKS[selectedBlock] || []
   );
+  updateDefaultIntensityRange();
 }
 
 function updateGradeOptions() {
