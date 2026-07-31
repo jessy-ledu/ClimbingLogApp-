@@ -105,3 +105,201 @@ window.EXERCISE_BLOCKS = {
     "Strength in Movement / PPO (Strength-Endurance)"
   ]
 };
+
+window.EXERCISE_CATALOG = {
+  "Active Recovery": {
+    "default_intensity_range_percent_1rm": "25–35"
+  },
+  "Mobility AO protocol": {
+    "default_intensity_range_percent_1rm": "2026-05-15 00:00:00"
+  },
+  "CARC": {
+    "default_intensity_range_percent_1rm": "25–35"
+  },
+  "Floor Abs": {
+    "default_intensity_range_percent_1rm": "55–70"
+  },
+  "Hanging Core Strength": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Hanging Core Strength-Endurance": {
+    "default_intensity_range_percent_1rm": "55–70"
+  },
+  "Plank": {
+    "default_intensity_range_percent_1rm": "55–70"
+  },
+  "Side Plank": {
+    "default_intensity_range_percent_1rm": "55–70"
+  },
+  "Hanging Knee Raise": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Hanging Leg Raise": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Ab Wheel Rollout": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Passive two arms half crimp hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Passive one arm half crimp hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Passive two arms open hand hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Passive one arm open hand hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Passive two arms full crimp hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Passive one arm full crimp hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Passive two arms pinch grip hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Passive one arms pinch grip hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "two arms three-fingers drag hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "one arm three-fingers drag hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "two arms two-fingers drag hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "one arm two-fingers drag hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "two arms one-fingers drag hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "one arm one-fingers drag hang": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Campus Board": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Contact Strength": {
+    "default_intensity_range_percent_1rm": "90–100"
+  },
+  "Pull-Up": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Chin-Up": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Scapular Pull-Up": {
+    "default_intensity_range_percent_1rm": "30–50"
+  },
+  "Lock-Off": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Assisted One-Arm Lock-Off": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Row": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Ring Row": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Face Pull": {
+    "default_intensity_range_percent_1rm": "35–55"
+  },
+  "Push-Up": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Ring Push-Up": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Bench Press": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Dip": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Weighted Dip": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Overhead Press": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Maximum Triceps Strength": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Maximum Biceps Strength": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Eccentric Biceps Curl": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Pletnev Biceps Protocol": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Deadlift": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Romanian Deadlift": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Single-Leg Romanian Deadlift": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Hip Thrust": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Nordic Hamstring Curl": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Back Squat": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Front Squat": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Split Squat": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Bulgarian Split Squat": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Calf Raise": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Tibialis Raise": {
+    "default_intensity_range_percent_1rm": "55–70"
+  },
+  "Lower-Body Antagonist / Prehab": {
+    "default_intensity_range_percent_1rm": "35–55"
+  },
+  "Upper-Body Antagonist / Prehab": {
+    "default_intensity_range_percent_1rm": "35–55"
+  },
+  "External Rotation": {
+    "default_intensity_range_percent_1rm": "35–55"
+  },
+  "Internal Rotation": {
+    "default_intensity_range_percent_1rm": "35–55"
+  },
+  "Y-T-W Raise": {
+    "default_intensity_range_percent_1rm": "30–50"
+  },
+  "Lateral Raise": {
+    "default_intensity_range_percent_1rm": "55–70"
+  },
+  "Slab Balance & Movement": {
+    "default_intensity_range_percent_1rm": "35–45"
+  },
+  "Complex Coordination Drills": {
+    "default_intensity_range_percent_1rm": "50–70"
+  },
+  "Strength in Movement / PPO (Strength-Endurance)": {
+    "default_intensity_range_percent_1rm": "55–70"
+  }
+};

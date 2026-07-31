@@ -1,6 +1,7 @@
 const STORAGE_KEY = "climbing_log_v5";
 
 const BLOCKS = window.EXERCISE_BLOCKS || {};
+const EXERCISE_CATALOG = window.EXERCISE_CATALOG || {};
 
 const ROUTE_GRADES = [
   "3a","3b","3c","4a","4b","4c","5a","5b","5c",
