@@ -24,20 +24,8 @@ window.EXERCISE_BLOCKS = {
     "Ab Wheel Rollout"
   ],
   "Fingers": [
-    "Passive two arms half crimp hang",
-    "Passive one arm half crimp hang",
-    "Passive two arms open hand hang",
-    "Passive one arm open hand hang",
-    "Passive two arms full crimp hang",
-    "Passive one arm full crimp hang",
-    "Passive two arms pinch grip hang",
-    "Passive one arms pinch grip hang",
-    "two arms three-fingers drag hang",
-    "one arm three-fingers drag hang",
-    "two arms two-fingers drag hang",
-    "one arm two-fingers drag hang",
-    "two arms one-fingers drag hang",
-    "one arm one-fingers drag hang",
+    "Finger curl one arm",
+    "Finger hang",
     "Campus Board",
     "Contact Strength"
   ],
@@ -140,46 +128,10 @@ window.EXERCISE_CATALOG = {
   "Ab Wheel Rollout": {
     "default_intensity_range_percent_1rm": "70–85"
   },
-  "Passive two arms half crimp hang": {
+  "Finger curl one arm": {
     "default_intensity_range_percent_1rm": "85–100"
   },
-  "Passive one arm half crimp hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "Passive two arms open hand hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "Passive one arm open hand hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "Passive two arms full crimp hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "Passive one arm full crimp hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "Passive two arms pinch grip hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "Passive one arms pinch grip hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "two arms three-fingers drag hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "one arm three-fingers drag hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "two arms two-fingers drag hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "one arm two-fingers drag hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "two arms one-fingers drag hang": {
-    "default_intensity_range_percent_1rm": "85–100"
-  },
-  "one arm one-fingers drag hang": {
+  "Finger hang": {
     "default_intensity_range_percent_1rm": "85–100"
   },
   "Campus Board": {

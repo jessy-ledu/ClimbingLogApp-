@@ -23,7 +23,8 @@ const COLUMNS = [
   "duration_min", "site", "session_type",
   "session_rpe", "focus", "focus_level", "comments",
   "entry_type", "block", "exercise", "strength_intensity_range",
-  "custom_strength_intensity", "explosive_strength", "sets", "rep", "external_load",
+  "custom_strength_intensity", "explosive_strength", "active_strength", "arm_configuration",
+  "grip_type", "sets", "rep", "external_load",
   "grade", "style", "length", "attempts", "mode", "done", "rpe",
   "entry_comment"
 ];
@@ -33,6 +34,22 @@ const MAX_ROUTE_GRADE_KEY = "climbingLog_maxRouteGrade";
 
 let rows = loadRows();
 
+function updateFingerOptionsVisibility() {
+  const isFingerBlock =
+    $("block").value === "Fingers";
+
+  $("finger_options").classList.toggle(
+    "hidden",
+    !isFingerBlock
+  );
+
+  // Reset finger-specific values when another block is selected.
+  if (!isFingerBlock) {
+    $("active_strength").checked = false;
+    $("arm_configuration").value = "two_arms";
+    $("grip_type").value = "half_crimp";
+  }
+}
 function updateCustomIntensityVisibility() {
   const isCustom =
     $("strength_intensity_range").value === "custom";
@@ -321,6 +338,20 @@ if (entryType === "exercise") {
     row.external_load = blockEl.querySelector(".block_load").value;
     row.rpe = $("ex_rpe").value;
     row.entry_comment = $("entry_comment").value;
+    const isFingerBlock =
+      $("block").value === "Fingers";
+    row.active_strength =
+      isFingerBlock
+        ? $("active_strength").checked
+        : false;
+    row.arm_configuration =
+      isFingerBlock
+        ? $("arm_configuration").value
+        : "";
+    row.grip_type =
+      isFingerBlock
+        ? $("grip_type").value
+        : "";
     rows.push(row);
   });
 
@@ -414,29 +445,74 @@ function renderTable() {
 }
 
 function init() {
-  $("add_set_block").addEventListener("click", () => addSetBlock());
+  $("add_set_block").addEventListener(
+    "click",
+    () => addSetBlock()
+  );
+
+  $("save_max_grades").addEventListener(
+    "click",
+    saveMaxGrades
+  );
+
+  $("block").addEventListener("change", () => {
+    updateExerciseOptions();
+    updateFingerOptionsVisibility();
+  });
+
+  $("exercise").addEventListener(
+    "change",
+    updateDefaultIntensityRange
+  );
+
+  $("session_type").addEventListener(
+    "change",
+    updateEntryVisibility
+  );
+
+  $("entry_type").addEventListener(
+    "change",
+    updateEntryVisibility
+  );
+
+  $("strength_intensity_range").addEventListener(
+    "change",
+    updateCustomIntensityVisibility
+  );
+
+  $("add_row").addEventListener(
+    "click",
+    addRow
+  );
+
+  $("export_csv").addEventListener(
+    "click",
+    exportCSV
+  );
+
+  $("clear_data").addEventListener(
+    "click",
+    clearData
+  );
+
+  // Initial state
   addSetBlock();
 
-  $("date").value = new Date().toISOString().slice(0, 10);
+  $("date").value =
+    new Date().toISOString().slice(0, 10);
 
   updateBlockOptions();
   updateGradeOptions();
   updateEntryVisibility();
   updateCustomIntensityVisibility();
+  updateFingerOptionsVisibility();
   loadMaxGrades();
-  $("save_max_grades").addEventListener("click", saveMaxGrades);
-  $("block").addEventListener("change", updateExerciseOptions);
-  $("session_type").addEventListener("change", updateEntryVisibility);
-  $("entry_type").addEventListener("change", updateEntryVisibility);
-  $("strength_intensity_range").addEventListener("change", updateCustomIntensityVisibility);
-  $("add_row").addEventListener("click", addRow);
-  $("export_csv").addEventListener("click", exportCSV);
-  $("clear_data").addEventListener("click", clearData);
-
   renderTable();
 
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register("service-worker.js");
+    navigator.serviceWorker.register(
+      "service-worker.js"
+    );
   }
 }
 
