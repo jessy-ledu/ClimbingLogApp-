@@ -23,6 +23,11 @@ window.EXERCISE_BLOCKS = {
     "Hanging Leg Raise",
     "Ab Wheel Rollout"
   ],
+  "Forearm": [
+    "Wrist curl extension",
+    "Wrist curl flexion",
+    "Wrist curl flexion barbell"
+  ],
   "Fingers": [
     "Finger curl one arm",
     "Finger hang",
@@ -61,7 +66,6 @@ window.EXERCISE_BLOCKS = {
   ],
   "Vertical push": [
     "Dip",
-    "Weighted Dip",
     "Overhead Press",
     "Maximum Triceps Strength"
   ],
@@ -99,7 +103,7 @@ window.EXERCISE_CATALOG = {
     "default_intensity_range_percent_1rm": "25–35"
   },
   "Mobility AO protocol": {
-    "default_intensity_range_percent_1rm": "2026-05-15 00:00:00"
+    "default_intensity_range_percent_1rm": "25–35"
   },
   "CARC": {
     "default_intensity_range_percent_1rm": "25–35"
@@ -127,6 +131,15 @@ window.EXERCISE_CATALOG = {
   },
   "Ab Wheel Rollout": {
     "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Wrist curl extension": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Wrist curl flexion": {
+    "default_intensity_range_percent_1rm": "85–100"
+  },
+  "Wrist curl flexion barbell": {
+    "default_intensity_range_percent_1rm": "85–100"
   },
   "Finger curl one arm": {
     "default_intensity_range_percent_1rm": "85–100"
@@ -174,9 +187,6 @@ window.EXERCISE_CATALOG = {
     "default_intensity_range_percent_1rm": "70–85"
   },
   "Dip": {
-    "default_intensity_range_percent_1rm": "70–85"
-  },
-  "Weighted Dip": {
     "default_intensity_range_percent_1rm": "85–100"
   },
   "Overhead Press": {

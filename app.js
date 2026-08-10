@@ -151,9 +151,9 @@ function updateMaxGradeStatus() {
 }
 
 function getClimbContext() {
-  const sessionType = $("session_type").value;
+  const entryType = $("entry_type").value;
 
-  if (sessionType === "B" || sessionType === "BT") {
+  if (entryType === "boulder") {
     return {
       climb_type: "boulder",
       max_grade: localStorage.getItem(MAX_BOULDER_GRADE_KEY) || "",
@@ -161,7 +161,7 @@ function getClimbContext() {
     };
   }
 
-  if (sessionType === "R" || sessionType === "RT") {
+  if (entryType === "route") {
     return {
       climb_type: "route",
       max_grade: localStorage.getItem(MAX_ROUTE_GRADE_KEY) || "",
@@ -242,9 +242,13 @@ function updateExerciseOptions() {
 }
 
 function updateGradeOptions() {
-  const type = $("session_type").value;
-  const grades = (type === "B" || type === "BT") ? BOULDER_GRADES : ROUTE_GRADES;
-  setOptions($("grade"), grades);
+  const entryType = $("entry_type").value;
+
+  if (entryType === "boulder") {
+    setOptions($("grade"), BOULDER_GRADES);
+  } else if (entryType === "route") {
+    setOptions($("grade"), ROUTE_GRADES);
+  }
 }
 
 function updateEntryVisibility() {
@@ -254,10 +258,6 @@ function updateEntryVisibility() {
 
   if (sessionType === "G") {
     entryTypeSelect.value = "exercise";
-    entryTypeSelect.disabled = true;
-    entryTypeLabel.classList.add("hidden");
-  } else if (sessionType === "R" || sessionType === "B") {
-    entryTypeSelect.value = "climb";
     entryTypeSelect.disabled = true;
     entryTypeLabel.classList.add("hidden");
   } else {
@@ -274,7 +274,8 @@ function updateEntryVisibility() {
 
   $("climb_form").classList.toggle(
     "hidden",
-    entryType !== "climb"
+    entryType !== "route" &&
+    entryType !== "boulder"
   );
 
   updateGradeOptions();
@@ -434,14 +435,54 @@ function clearData() {
   renderTable();
 }
 
+function deleteRow(index) {
+  const confirmed = confirm("Delete this row?");
+
+  if (!confirmed) return;
+
+  rows.splice(index, 1);
+
+  saveRows();
+  renderTable();
+}
+
 function renderTable() {
   const thead = $("preview_table").querySelector("thead");
   const tbody = $("preview_table").querySelector("tbody");
 
-  thead.innerHTML = `<tr>${COLUMNS.map(c => `<th>${c}</th>`).join("")}</tr>`;
-  tbody.innerHTML = rows.map(row => {
-    return `<tr>${COLUMNS.map(c => `<td>${row[c] ?? ""}</td>`).join("")}</tr>`;
+  thead.innerHTML = `
+    <tr>
+      ${COLUMNS.map(c => `<th>${c}</th>`).join("")}
+      <th>Delete</th>
+    </tr>
+  `;
+
+  tbody.innerHTML = rows.map((row, index) => {
+    return `
+      <tr>
+        ${COLUMNS.map(c => `<td>${row[c] ?? ""}</td>`).join("")}
+
+        <td>
+          <button
+            type="button"
+            class="delete-row"
+            data-index="${index}"
+          >
+            Delete
+          </button>
+        </td>
+      </tr>
+    `;
   }).join("");
+
+  document
+    .querySelectorAll(".delete-row")
+    .forEach(button => {
+      button.addEventListener("click", () => {
+        const index = Number(button.dataset.index);
+        deleteRow(index);
+      });
+    });
 }
 
 function init() {
