@@ -21,86 +21,6 @@
         <input id="date" type="date" />
       </label>
 
-      <details class="settings-section">
-  <summary>Maximum grades</summary>
-
-  <div class="form-grid">
-    <label>
-      Max boulder grade — Fontainebleau
-      <select id="max_boulder_grade">
-        <option value="">Not set</option>
-        <option value="3">3</option>
-        <option value="4">4</option>
-        <option value="4+">4+</option>
-        <option value="5">5</option>
-        <option value="5+">5+</option>
-        <option value="6A">6A</option>
-        <option value="6A+">6A+</option>
-        <option value="6B">6B</option>
-        <option value="6B+">6B+</option>
-        <option value="6C">6C</option>
-        <option value="6C+">6C+</option>
-        <option value="7A">7A</option>
-        <option value="7A+">7A+</option>
-        <option value="7B">7B</option>
-        <option value="7B+">7B+</option>
-        <option value="7C">7C</option>
-        <option value="7C+">7C+</option>
-        <option value="8A">8A</option>
-        <option value="8A+">8A+</option>
-        <option value="8B">8B</option>
-        <option value="8B+">8B+</option>
-        <option value="8C">8C</option>
-        <option value="8C+">8C+</option>
-        <option value="9A">9A</option>
-      </select>
-    </label>
-
-    <label>
-      Max route grade — French
-      <select id="max_route_grade">
-        <option value="">Not set</option>
-        <option value="3">3</option>
-        <option value="4a">4a</option>
-        <option value="4b">4b</option>
-        <option value="4c">4c</option>
-        <option value="5a">5a</option>
-        <option value="5b">5b</option>
-        <option value="5c">5c</option>
-        <option value="6a">6a</option>
-        <option value="6a+">6a+</option>
-        <option value="6b">6b</option>
-        <option value="6b+">6b+</option>
-        <option value="6c">6c</option>
-        <option value="6c+">6c+</option>
-        <option value="7a">7a</option>
-        <option value="7a+">7a+</option>
-        <option value="7b">7b</option>
-        <option value="7b+">7b+</option>
-        <option value="7c">7c</option>
-        <option value="7c+">7c+</option>
-        <option value="8a">8a</option>
-        <option value="8a+">8a+</option>
-        <option value="8b">8b</option>
-        <option value="8b+">8b+</option>
-        <option value="8c">8c</option>
-        <option value="8c+">8c+</option>
-        <option value="9a">9a</option>
-        <option value="9a+">9a+</option>
-        <option value="9b">9b</option>
-        <option value="9b+">9b+</option>
-        <option value="9c">9c</option>
-      </select>
-    </label>
-
-    <button id="save_max_grades" type="button">
-      Save maximum grades
-    </button>
-
-    <p id="max_grade_status"></p>
-  </div>
-</details>
-
       <label>Session type
         <select id="session_type">
           <option value="G">Gym</option>
@@ -174,30 +94,44 @@
           <select id="exercise"></select>
         </label>
 
-        <label>Intensity range (% max strength)
-  <select id="strength_intensity_range">
-    <option value="<60">&lt;60%</option>
-    <option value="60-70">60–70%</option>
-    <option value="70-80">70–80%</option>
-    <option value="80-90">80–90%</option>
-    <option value="90-100">90–100%</option>
-    <option value=">100">&gt;100%</option>
-    <option value="custom">Custom</option>
-  </select>
-</label>
+<div id="exercise_max_section">
 
-<label id="custom_intensity_container" class="hidden">
-  Custom intensity (% max strength)
+  <!-- Shown when a maximum is already saved -->
+  <div id="exercise_max_display" class="hidden">
+    <span id="exercise_max_text"></span>
 
-  <input
-    id="custom_strength_intensity"
-    type="number"
-    inputmode="decimal"
-    min="0"
-    step="0.5"
-    placeholder="Example: 82.5"
-  />
-</label>
+    <button
+      id="change_exercise_max"
+      type="button"
+    >
+      Change
+    </button>
+  </div>
+
+  <!-- Shown when no maximum exists, or after clicking Change -->
+  <div id="exercise_max_editor">
+
+    <label>
+      Maximum strength
+      <input
+        id="exercise_max_strength"
+        type="number"
+        inputmode="decimal"
+        step="0.5"
+        placeholder="Enter max"
+      />
+    </label>
+
+    <button
+      id="save_exercise_max"
+      type="button"
+    >
+      Save maximum strength
+    </button>
+
+  </div>
+
+</div>
 
 <label class="checkbox-label">
   <input
@@ -248,6 +182,105 @@
       </div>
 
       <div id="climb_form" class="hidden">
+ <div id="climb_max_section">
+
+  <!-- Compact display when a max is already saved -->
+  <div id="climb_max_display" class="hidden">
+    <span id="climb_max_text"></span>
+
+    <button
+      id="change_climb_max"
+      type="button"
+    >
+      Change
+    </button>
+  </div>
+
+  <!-- Editor shown only if no max exists or Change is clicked -->
+  <div id="climb_max_editor">
+
+    <div id="route_max_section" class="hidden">
+      <label>
+        Maximum route grade
+        <select id="max_route_grade">
+          <option value="">Not set</option>
+          <option value="3">3</option>
+          <option value="4a">4a</option>
+          <option value="4b">4b</option>
+          <option value="4c">4c</option>
+          <option value="5a">5a</option>
+          <option value="5b">5b</option>
+          <option value="5c">5c</option>
+          <option value="6a">6a</option>
+          <option value="6a+">6a+</option>
+          <option value="6b">6b</option>
+          <option value="6b+">6b+</option>
+          <option value="6c">6c</option>
+          <option value="6c+">6c+</option>
+          <option value="7a">7a</option>
+          <option value="7a+">7a+</option>
+          <option value="7b">7b</option>
+          <option value="7b+">7b+</option>
+          <option value="7c">7c</option>
+          <option value="7c+">7c+</option>
+          <option value="8a">8a</option>
+          <option value="8a+">8a+</option>
+          <option value="8b">8b</option>
+          <option value="8b+">8b+</option>
+          <option value="8c">8c</option>
+          <option value="8c+">8c+</option>
+          <option value="9a">9a</option>
+          <option value="9a+">9a+</option>
+          <option value="9b">9b</option>
+          <option value="9b+">9b+</option>
+          <option value="9c">9c</option>
+        </select>
+      </label>
+    </div>
+
+    <div id="boulder_max_section" class="hidden">
+      <label>
+        Maximum boulder grade
+        <select id="max_boulder_grade">
+          <option value="">Not set</option>
+          <option value="3">3</option>
+          <option value="4">4</option>
+          <option value="4+">4+</option>
+          <option value="5">5</option>
+          <option value="5+">5+</option>
+          <option value="6A">6A</option>
+          <option value="6A+">6A+</option>
+          <option value="6B">6B</option>
+          <option value="6B+">6B+</option>
+          <option value="6C">6C</option>
+          <option value="6C+">6C+</option>
+          <option value="7A">7A</option>
+          <option value="7A+">7A+</option>
+          <option value="7B">7B</option>
+          <option value="7B+">7B+</option>
+          <option value="7C">7C</option>
+          <option value="7C+">7C+</option>
+          <option value="8A">8A</option>
+          <option value="8A+">8A+</option>
+          <option value="8B">8B</option>
+          <option value="8B+">8B+</option>
+          <option value="8C">8C</option>
+          <option value="8C+">8C+</option>
+          <option value="9A">9A</option>
+        </select>
+      </label>
+    </div>
+
+    <button
+      id="save_max_grades"
+      type="button"
+    >
+      Save maximum grade
+    </button>
+
+  </div>
+
+</div>
         <label>Grade
           <select id="grade"></select>
         </label>

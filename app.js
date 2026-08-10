@@ -19,7 +19,7 @@ const BOULDER_GRADES = [
 ];
 
 const COLUMNS = [
-  "session_id", "date", "climb_type", "grade",  "max_grade",  "max_grade_system", 
+  "session_id", "date", "climb_type", "grade",  "max_grade", "max_strength",  "max_grade_system", 
   "duration_min", "site", "session_type",
   "session_rpe", "focus", "focus_level", "comments",
   "entry_type", "block", "exercise", "strength_intensity_range",
@@ -31,8 +31,69 @@ const COLUMNS = [
 
 const MAX_BOULDER_GRADE_KEY = "climbingLog_maxBoulderGrade";
 const MAX_ROUTE_GRADE_KEY = "climbingLog_maxRouteGrade";
+const EXERCISE_MAXES_KEY = "climbingLog_exerciseMaxStrengths";
 
 let rows = loadRows();
+
+function loadExerciseMaxes() {
+  try {
+    return JSON.parse(
+      localStorage.getItem(EXERCISE_MAXES_KEY)
+    ) || {};
+  } catch {
+    return {};
+  }
+}
+function getCurrentExerciseKey() {
+  const exerciseName = $("exercise").value;
+
+  const exerciseData =
+    EXERCISE_CATALOG[exerciseName];
+
+  return (
+    exerciseData?.exercise_id ||
+    exerciseName
+  );
+}
+function updateExerciseMaxDisplay() {
+  const exerciseKey = getCurrentExerciseKey();
+  const maxes = loadExerciseMaxes();
+  const savedMax = maxes[exerciseKey] ?? "";
+
+  const display = $("exercise_max_display");
+  const editor = $("exercise_max_editor");
+  const text = $("exercise_max_text");
+
+  if (savedMax !== "") {
+    $("exercise_max_strength").value = savedMax;
+
+    text.textContent = `Max: ${savedMax}`;
+
+    display.classList.remove("hidden");
+    editor.classList.add("hidden");
+  } else {
+    $("exercise_max_strength").value = "";
+
+    display.classList.add("hidden");
+    editor.classList.remove("hidden");
+  }
+}
+
+function updateClimbMaxVisibility() {
+  const entryType = $("entry_type").value;
+
+  $("route_max_section").classList.toggle(
+    "hidden",
+    entryType !== "route"
+  );
+
+  $("boulder_max_section").classList.toggle(
+    "hidden",
+    entryType !== "boulder"
+  );
+
+  updateMaxGradeStatus();
+}
 
 function updateFingerOptionsVisibility() {
   const isFingerBlock =
@@ -49,64 +110,6 @@ function updateFingerOptionsVisibility() {
     $("arm_configuration").value = "two_arms";
     $("grip_type").value = "half_crimp";
   }
-}
-function updateCustomIntensityVisibility() {
-  const isCustom =
-    $("strength_intensity_range").value === "custom";
-
-  $("custom_intensity_container").classList.toggle(
-    "hidden",
-    !isCustom
-  );
-
-  if (!isCustom) {
-    $("custom_strength_intensity").value = "";
-  }
-}
-
-function updateDefaultIntensityRange() {
-  const exerciseName = $("exercise").value;
-  const exerciseData = EXERCISE_CATALOG[exerciseName];
-  const select = $("strength_intensity_range");
-
-  const defaultRange =
-    exerciseData?.default_intensity_range_percent_1rm?.trim() || "";
-
-  // Remove the previous dynamically added default option.
-  select
-    .querySelectorAll('option[data-exercise-default="true"]')
-    .forEach(option => option.remove());
-
-  if (!defaultRange) {
-    select.value = "";
-    updateCustomIntensityVisibility();
-    return;
-  }
-
-  // Check whether the exact Excel value already exists.
-  const existingOption = Array.from(select.options).find(
-    option => option.value === defaultRange
-  );
-
-  if (existingOption) {
-    select.value = defaultRange;
-  } else {
-    const defaultOption = document.createElement("option");
-
-    defaultOption.value = defaultRange;
-    defaultOption.textContent = `${defaultRange} — Default`;
-    defaultOption.dataset.exerciseDefault = "true";
-
-    // Insert just before Custom.
-    const customOption = Array.from(select.options).find(
-      option => option.value === "custom"
-    );
-
-    select.insertBefore(defaultOption, customOption);
-    select.value = defaultRange;
-  }
-
-  updateCustomIntensityVisibility();
 }
 
 function loadMaxGrades() {
@@ -140,14 +143,38 @@ function saveMaxGrades() {
 }
 
 function updateMaxGradeStatus() {
-  const maxBoulderGrade =
-    localStorage.getItem(MAX_BOULDER_GRADE_KEY) || "not set";
+  const entryType = $("entry_type").value;
 
-  const maxRouteGrade =
-    localStorage.getItem(MAX_ROUTE_GRADE_KEY) || "not set";
+  let savedGrade = "";
+  let label = "";
 
-  $("max_grade_status").textContent =
-    `Saved: boulder ${maxBoulderGrade} · route ${maxRouteGrade}`;
+  if (entryType === "route") {
+    savedGrade =
+      localStorage.getItem(MAX_ROUTE_GRADE_KEY) || "";
+
+    label = "Route max";
+  }
+
+  else if (entryType === "boulder") {
+    savedGrade =
+      localStorage.getItem(MAX_BOULDER_GRADE_KEY) || "";
+
+    label = "Boulder max";
+  }
+
+  const display = $("climb_max_display");
+  const editor = $("climb_max_editor");
+  const text = $("climb_max_text");
+
+  if (savedGrade) {
+    text.textContent = `${label}: ${savedGrade}`;
+
+    display.classList.remove("hidden");
+    editor.classList.add("hidden");
+  } else {
+    display.classList.add("hidden");
+    editor.classList.remove("hidden");
+  }
 }
 
 function getClimbContext() {
@@ -238,7 +265,7 @@ function updateExerciseOptions() {
     $("exercise"),
     BLOCKS[selectedBlock] || []
   );
-  updateDefaultIntensityRange();
+  updateExerciseMaxDisplay();
 }
 
 function updateGradeOptions() {
@@ -279,6 +306,34 @@ function updateEntryVisibility() {
   );
 
   updateGradeOptions();
+  updateClimbMaxVisibility();
+}
+
+function saveExerciseMax() {
+  const exerciseKey =
+    getCurrentExerciseKey();
+
+  const value =
+    $("exercise_max_strength").value;
+
+  if (!exerciseKey) return;
+
+  const maxes =
+    loadExerciseMaxes();
+
+  if (value === "") {
+    delete maxes[exerciseKey];
+  } else {
+    maxes[exerciseKey] =
+      Number(value);
+  }
+
+  localStorage.setItem(
+    EXERCISE_MAXES_KEY,
+    JSON.stringify(maxes)
+  );
+
+  updateExerciseMaxDisplay();
 }
 
 function getHeader() {
@@ -300,17 +355,149 @@ function addSetBlock(sets = "", rep = "", load = "") {
   div.className = "set-block";
 
   div.innerHTML = `
-    <input class="block_sets" type="number" inputmode="numeric" placeholder="Sets" value="${sets}">
-    <input class="block_rep" type="number" inputmode="numeric" placeholder="Rep" value="${rep}">
-    <input class="block_load" type="text" placeholder="Load" value="${load}">
-    <button type="button" class="remove_set_block">×</button>
+    <input
+      class="block_sets"
+      type="number"
+      inputmode="numeric"
+      placeholder="Sets"
+      value="${sets}"
+    >
+
+    <input
+      class="block_rep"
+      type="number"
+      inputmode="numeric"
+      placeholder="Rep"
+      value="${rep}"
+    >
+
+    <input
+      class="block_load"
+      type="text"
+      placeholder="Load"
+      value="${load}"
+    >
+
+    <select class="block_intensity_range"></select>
+
+    <input
+      class="block_custom_intensity hidden"
+      type="number"
+      inputmode="decimal"
+      min="0"
+      step="0.5"
+      placeholder="% max"
+    >
+
+    <button
+      type="button"
+      class="remove_set_block"
+    >
+      ×
+    </button>
   `;
 
-  div.querySelector(".remove_set_block").addEventListener("click", () => {
-    div.remove();
-  });
+  div
+    .querySelector(".remove_set_block")
+    .addEventListener("click", () => {
+      div.remove();
+    });
 
   $("set_blocks").appendChild(div);
+
+  updateSetBlockIntensity(div);
+}
+
+function updateSetBlockIntensity(blockEl) {
+  const select =
+    blockEl.querySelector(".block_intensity_range");
+
+  const customInput =
+    blockEl.querySelector(".block_custom_intensity");
+
+  const exerciseName = $("exercise").value;
+
+  const exerciseData =
+    EXERCISE_CATALOG[exerciseName];
+
+  const defaultRange =
+    exerciseData?.default_intensity_range_percent_1rm?.trim() || "";
+
+  const standardRanges = [
+    ["<60", "<60%"],
+    ["60-70", "60–70%"],
+    ["70-80", "70–80%"],
+    ["80-90", "80–90%"],
+    ["90-100", "90–100%"],
+    [">100", ">100%"]
+  ];
+
+  select.innerHTML = "";
+
+  standardRanges.forEach(([value, label]) => {
+    const option = document.createElement("option");
+
+    option.value = value;
+    option.textContent = label;
+
+    select.appendChild(option);
+  });
+
+  // Add the Excel default if it isn't already
+  // one of the standard choices.
+  if (
+    defaultRange &&
+    !standardRanges.some(([value]) => value === defaultRange)
+  ) {
+    const option = document.createElement("option");
+
+    option.value = defaultRange;
+    option.textContent = `${defaultRange} — Default`;
+
+    select.appendChild(option);
+  }
+
+  const customOption =
+    document.createElement("option");
+
+  customOption.value = "custom";
+  customOption.textContent = "Custom";
+
+  select.appendChild(customOption);
+
+  // Select Excel default automatically.
+  if (defaultRange) {
+    select.value = defaultRange;
+  }
+
+  function updateCustomVisibility() {
+    const isCustom =
+      select.value === "custom";
+
+    customInput.classList.toggle(
+      "hidden",
+      !isCustom
+    );
+
+    if (!isCustom) {
+      customInput.value = "";
+    }
+  }
+
+  select.addEventListener(
+    "change",
+    updateCustomVisibility
+  );
+
+  updateCustomVisibility();
+}
+
+function updateAllSetBlockIntensities() {
+  document
+    .querySelectorAll(".set-block")
+    .forEach(blockEl => {
+      updateSetBlockIntensity(blockEl);
+    });
 }
 
 function addRow() {
@@ -324,6 +511,28 @@ function addRow() {
 if (entryType === "exercise") {
   const setBlocks = document.querySelectorAll(".set-block");
 
+  for (const blockEl of setBlocks) {
+  const range =
+    blockEl.querySelector(
+      ".block_intensity_range"
+    ).value;
+
+  const custom =
+    blockEl.querySelector(
+      ".block_custom_intensity"
+    ).value;
+
+  if (
+    range === "custom" &&
+    custom === ""
+  ) {
+    alert(
+      "Enter a custom intensity value for every Custom set block."
+    );
+
+    return;
+  }
+}
   setBlocks.forEach(blockEl => {
     let row = Object.fromEntries(COLUMNS.map(c => [c, ""]));
     Object.assign(row, header);
@@ -331,8 +540,30 @@ if (entryType === "exercise") {
     row.entry_type = "exercise";
     row.block = $("block").value;
     row.exercise = $("exercise").value;
-    row.strength_intensity_range =$("strength_intensity_range").value;
-    row.custom_strength_intensity =$("strength_intensity_range").value === "custom"? $("custom_strength_intensity").value: "";
+
+    const exerciseKey = getCurrentExerciseKey();
+    const exerciseMaxes = loadExerciseMaxes();
+
+    row.max_strength =
+      exerciseMaxes[exerciseKey] ?? "";
+
+    const intensityRange =
+  blockEl.querySelector(
+    ".block_intensity_range"
+  ).value;
+
+const customIntensity =
+  blockEl.querySelector(
+    ".block_custom_intensity"
+  ).value;
+
+row.strength_intensity_range =
+  intensityRange;
+
+row.custom_strength_intensity =
+  intensityRange === "custom"
+    ? customIntensity
+    : "";
     row.explosive_strength =$("explosive_strength").checked;
     row.sets = blockEl.querySelector(".block_sets").value;
     row.rep = blockEl.querySelector(".block_rep").value;
@@ -356,13 +587,6 @@ if (entryType === "exercise") {
     rows.push(row);
   });
 
-  if (
-  $("strength_intensity_range").value === "custom" &&
-  $("custom_strength_intensity").value === ""
-) {
-  alert("Enter a custom intensity value.");
-  return;
-}
   saveRows();
 
   $("entry_comment").value = "";
@@ -496,16 +720,43 @@ function init() {
     saveMaxGrades
   );
 
-  $("block").addEventListener("change", () => {
-    updateExerciseOptions();
-    updateFingerOptionsVisibility();
-  });
+$("exercise").addEventListener("change", () => {
+  updateExerciseMaxDisplay();
+  updateAllSetBlockIntensities();
+});
 
-  $("exercise").addEventListener(
-    "change",
-    updateDefaultIntensityRange
+  $("save_exercise_max").addEventListener(
+    "click",
+    saveExerciseMax
   );
 
+  $("change_exercise_max").addEventListener("click", () => {
+  $("exercise_max_display").classList.add("hidden");
+  $("exercise_max_editor").classList.remove("hidden");
+});
+
+$("change_climb_max").addEventListener("click", () => {
+  $("climb_max_display").classList.add("hidden");
+  $("climb_max_editor").classList.remove("hidden");
+
+  const entryType = $("entry_type").value;
+
+  $("route_max_section").classList.toggle(
+    "hidden",
+    entryType !== "route"
+  );
+
+  $("boulder_max_section").classList.toggle(
+    "hidden",
+    entryType !== "boulder"
+  );
+});
+  $("block").addEventListener("change", () => {
+  updateExerciseOptions();
+  updateFingerOptionsVisibility();
+  updateAllSetBlockIntensities();
+});
+  updateExerciseMaxDisplay();
   $("session_type").addEventListener(
     "change",
     updateEntryVisibility
@@ -514,11 +765,6 @@ function init() {
   $("entry_type").addEventListener(
     "change",
     updateEntryVisibility
-  );
-
-  $("strength_intensity_range").addEventListener(
-    "change",
-    updateCustomIntensityVisibility
   );
 
   $("add_row").addEventListener(
@@ -545,7 +791,6 @@ function init() {
   updateBlockOptions();
   updateGradeOptions();
   updateEntryVisibility();
-  updateCustomIntensityVisibility();
   updateFingerOptionsVisibility();
   loadMaxGrades();
   renderTable();
