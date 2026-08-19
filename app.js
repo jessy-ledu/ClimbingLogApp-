@@ -55,12 +55,7 @@ function addExerciseBlock() {
         <select class="exercise_select"></select>
       </label>
 
-      <button
-        type="button"
-        class="remove_exercise_block"
-      >
-        ×
-      </button>
+
 
     </div>
 
@@ -114,10 +109,13 @@ function addExerciseBlock() {
       + Add set block
     </button>
 
+
+
+    
     <label>
-      RPE
+      RPE (1st set)
       <select class="exercise_rpe">
-        <option value=""></option>
+        <option value="1" selected>1</option>
         <option>1</option>
         <option>2</option>
         <option>3</option>
@@ -140,7 +138,16 @@ function addExerciseBlock() {
       ></textarea>
     </label>
 
+    <button
+      type="button"
+      class="remove_exercise_block"
+    >
+      x Remove exercise
+    </button>
+
   `;
+
+  
 
   $("exercise_blocks").appendChild(exerciseBlock);
 

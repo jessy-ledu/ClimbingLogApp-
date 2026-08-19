@@ -93,7 +93,9 @@ th, td {
 th { background: #2a2a2a; }
 
 @media (min-width: 700px) {
-  .card { padding: 18px; }
+  .card {
+    padding: 18px;
+  }
 
   label {
     display: inline-block;
@@ -102,8 +104,15 @@ th { background: #2a2a2a; }
     vertical-align: top;
   }
 
-  textarea { min-height: 46px; }
-  .set-block {
+  textarea {
+    min-height: 46px;
+  }
+}
+
+
+/* Set blocks */
+
+.set-block {
   display: grid;
   grid-template-columns:
     0.7fr
@@ -112,7 +121,6 @@ th { background: #2a2a2a; }
     1.2fr
     1fr
     auto;
-
   gap: 6px;
   margin-bottom: 8px;
   align-items: center;
@@ -123,23 +131,30 @@ th { background: #2a2a2a; }
   background: #b93737;
 }
 
+
+/* Checkboxes */
+
 .checkbox-label {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    margin-top: 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
 }
 
 .checkbox-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
-    margin: 0;
-    cursor: pointer;
+  width: 18px;
+  height: 18px;
+  margin: 0;
+  cursor: pointer;
 }
 
 .checkbox-label span {
-    margin: 0;
+  margin: 0;
 }
+
+
+/* Subtle Change buttons */
+
 #change_exercise_max,
 #change_climb_max,
 #change_bodyweight {
@@ -147,13 +162,10 @@ th { background: #2a2a2a; }
   border: none;
   padding: 2px 6px;
   margin-left: 6px;
-
   font-size: 0.8rem;
   font-weight: normal;
-
   color: #777;
   text-decoration: underline;
-
   cursor: pointer;
   width: auto;
 }
@@ -161,6 +173,41 @@ th { background: #2a2a2a; }
 #change_exercise_max:hover,
 #change_climb_max:hover,
 #change_bodyweight:hover {
-  color: #333;
+  color: #aaa;
 }
+
+
+/* Exercise controls */
+
+.add_set_block {
+  display: block;
+  width: 25%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.remove_exercise_block {
+  display: block;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+  background: #c93b3b;
+}
+
+#add_exercise_block {
+  display: block;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#add_row {
+  display: block;
+  width: 50%;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.remove_exercise_block:hover {
+  background: #a92f2f;
 }
