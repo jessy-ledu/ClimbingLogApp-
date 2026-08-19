@@ -3,6 +3,8 @@ const STORAGE_KEY = "climbing_log_v5";
 const BLOCKS = window.EXERCISE_BLOCKS || {};
 const EXERCISE_CATALOG = window.EXERCISE_CATALOG || {};
 
+const BODYWEIGHT_KEY = "climbingLog_bodyweight";
+
 const ROUTE_GRADES = [
   "3a","3b","3c","4a","4b","4c","5a","5b","5c",
   "6a","6a+","6b","6b+","6c","6c+",
@@ -21,8 +23,9 @@ const BOULDER_GRADES = [
 const COLUMNS = [
   "session_id", "date", "climb_type", "grade",  "max_grade", "max_strength",  "max_grade_system", 
   "duration_min", "site", "session_type",
-  "session_rpe", "focus", "focus_level", "comments",
-  "entry_type", "block", "exercise", "strength_intensity_range",
+  "session_rpe", "focus", "focus_level", "comments",   "bodyweight",
+  "entry_type", "block", "exercise", "unilateral",
+  "side", "strength_intensity_range",
   "custom_strength_intensity", "explosive_strength", "active_strength", "arm_configuration",
   "grip_type", "sets", "rep", "external_load",
   "grade", "style", "length", "attempts", "mode", "done", "rpe",
@@ -34,6 +37,44 @@ const MAX_ROUTE_GRADE_KEY = "climbingLog_maxRouteGrade";
 const EXERCISE_MAXES_KEY = "climbingLog_exerciseMaxStrengths";
 
 let rows = loadRows();
+
+function updateBodyweightDisplay() {
+  const savedBodyweight =
+    localStorage.getItem(BODYWEIGHT_KEY) || "";
+
+  const display = $("bodyweight_display");
+  const editor = $("bodyweight_editor");
+  const text = $("bodyweight_text");
+
+  if (savedBodyweight !== "") {
+    $("bodyweight").value = savedBodyweight;
+
+    text.textContent =
+      `Bodyweight: ${savedBodyweight} kg`;
+
+    display.classList.remove("hidden");
+    editor.classList.add("hidden");
+  } else {
+    $("bodyweight").value = "";
+
+    display.classList.add("hidden");
+    editor.classList.remove("hidden");
+  }
+}
+
+function saveBodyweight() {
+  const value =
+    $("bodyweight").value.trim();
+
+  if (value === "") return;
+
+  localStorage.setItem(
+    BODYWEIGHT_KEY,
+    value
+  );
+
+  updateBodyweightDisplay();
+}
 
 function loadExerciseMaxes() {
   try {
@@ -58,24 +99,75 @@ function getCurrentExerciseKey() {
 function updateExerciseMaxDisplay() {
   const exerciseKey = getCurrentExerciseKey();
   const maxes = loadExerciseMaxes();
-  const savedMax = maxes[exerciseKey] ?? "";
 
-  const display = $("exercise_max_display");
-  const editor = $("exercise_max_editor");
-  const text = $("exercise_max_text");
+  const saved = maxes[exerciseKey] || {
+    bilateral: "",
+    left: "",
+    right: ""
+  };
 
-  if (savedMax !== "") {
-    $("exercise_max_strength").value = savedMax;
+  const isUnilateral = $("unilateral").checked;
 
-    text.textContent = `Max: ${savedMax}`;
+  const bilateralEditor =
+    $("exercise_max_bilateral_editor");
 
-    display.classList.remove("hidden");
-    editor.classList.add("hidden");
+  const unilateralEditor =
+    $("exercise_max_unilateral_editor");
+
+  const display =
+    $("exercise_max_display");
+
+  const text =
+    $("exercise_max_text");
+
+  if (isUnilateral) {
+    $("exercise_max_left").value =
+      saved.left || "";
+
+    $("exercise_max_right").value =
+      saved.right || "";
+
+    const hasBothUnilateral =
+      saved.left !== "" &&
+      saved.right !== "";
+
+    if (hasBothUnilateral) {
+      bilateralEditor.classList.add("hidden");
+      unilateralEditor.classList.add("hidden");
+
+      text.textContent =
+        `Left: ${saved.left} · Right: ${saved.right}`;
+
+      display.classList.remove("hidden");
+    } else {
+      display.classList.add("hidden");
+
+      bilateralEditor.classList.add("hidden");
+      unilateralEditor.classList.remove("hidden");
+    }
+
   } else {
-    $("exercise_max_strength").value = "";
 
-    display.classList.add("hidden");
-    editor.classList.remove("hidden");
+    $("exercise_max_strength").value =
+      saved.bilateral || "";
+
+    const hasBilateral =
+      saved.bilateral !== "";
+
+    if (hasBilateral) {
+      bilateralEditor.classList.add("hidden");
+      unilateralEditor.classList.add("hidden");
+
+      text.textContent =
+        `Max: ${saved.bilateral}`;
+
+      display.classList.remove("hidden");
+    } else {
+      display.classList.add("hidden");
+
+      unilateralEditor.classList.add("hidden");
+      bilateralEditor.classList.remove("hidden");
+    }
   }
 }
 
@@ -310,23 +402,22 @@ function updateEntryVisibility() {
 }
 
 function saveExerciseMax() {
-  const exerciseKey =
-    getCurrentExerciseKey();
-
-  const value =
-    $("exercise_max_strength").value;
+  const exerciseKey = getCurrentExerciseKey();
 
   if (!exerciseKey) return;
 
-  const maxes =
-    loadExerciseMaxes();
+  const maxes = loadExerciseMaxes();
 
-  if (value === "") {
-    delete maxes[exerciseKey];
-  } else {
-    maxes[exerciseKey] =
-      Number(value);
-  }
+  const existing = maxes[exerciseKey] || {
+    bilateral: "",
+    left: "",
+    right: ""
+  };
+
+  existing.bilateral =
+    $("exercise_max_strength").value.trim();
+
+  maxes[exerciseKey] = existing;
 
   localStorage.setItem(
     EXERCISE_MAXES_KEY,
@@ -335,7 +426,34 @@ function saveExerciseMax() {
 
   updateExerciseMaxDisplay();
 }
+function saveExerciseMaxUnilateral() {
+  const exerciseKey = getCurrentExerciseKey();
 
+  if (!exerciseKey) return;
+
+  const maxes = loadExerciseMaxes();
+
+  const existing = maxes[exerciseKey] || {
+    bilateral: "",
+    left: "",
+    right: ""
+  };
+
+  existing.left =
+    $("exercise_max_left").value.trim();
+
+  existing.right =
+    $("exercise_max_right").value.trim();
+
+  maxes[exerciseKey] = existing;
+
+  localStorage.setItem(
+    EXERCISE_MAXES_KEY,
+    JSON.stringify(maxes)
+  );
+
+  updateExerciseMaxDisplay();
+}
 function getHeader() {
   return {
     session_id: getSessionId(),
@@ -343,11 +461,29 @@ function getHeader() {
     duration_min: $("duration_min").value,
     site: $("site").value,
     session_type: $("session_type").value,
+    bodyweight: localStorage.getItem(BODYWEIGHT_KEY) || "",
     session_rpe: $("session_rpe").value,
     focus: $("focus").value,
     focus_level: $("focus_level").value,
     comments: $("comments").value
   };
+}
+
+function updateUnilateralVisibility() {
+  const isUnilateral = $("unilateral").checked;
+
+  document
+    .querySelectorAll(".block_side")
+    .forEach(select => {
+      select.classList.toggle(
+        "hidden",
+        !isUnilateral
+      );
+
+      if (!isUnilateral) {
+        select.value = "left";
+      }
+    });
 }
 
 function addSetBlock(sets = "", rep = "", load = "") {
@@ -380,6 +516,11 @@ function addSetBlock(sets = "", rep = "", load = "") {
 
     <select class="block_intensity_range"></select>
 
+    <select class="block_side hidden">
+  <option value="left">Left</option>
+  <option value="right">Right</option>
+</select>
+
     <input
       class="block_custom_intensity hidden"
       type="number"
@@ -406,6 +547,7 @@ function addSetBlock(sets = "", rep = "", load = "") {
   $("set_blocks").appendChild(div);
 
   updateSetBlockIntensity(div);
+  updateUnilateralVisibility();
 }
 
 function updateSetBlockIntensity(blockEl) {
@@ -424,12 +566,12 @@ function updateSetBlockIntensity(blockEl) {
     exerciseData?.default_intensity_range_percent_1rm?.trim() || "";
 
   const standardRanges = [
-    ["<60", "<60%"],
-    ["60-70", "60–70%"],
-    ["70-80", "70–80%"],
-    ["80-90", "80–90%"],
-    ["90-100", "90–100%"],
-    [">100", ">100%"]
+    ["<60", "<60% RM"],
+    ["60-70", "60–70% RM"],
+    ["70-80", "70–80% RM"],
+    ["80-90", "80–90% RM"],
+    ["90-100", "90–100% RM"],
+    [">100", ">100% RM"]
   ];
 
   select.innerHTML = "";
@@ -541,11 +683,31 @@ if (entryType === "exercise") {
     row.block = $("block").value;
     row.exercise = $("exercise").value;
 
-    const exerciseKey = getCurrentExerciseKey();
-    const exerciseMaxes = loadExerciseMaxes();
+        const isUnilateral =
+      $("unilateral").checked;
 
-    row.max_strength =
-      exerciseMaxes[exerciseKey] ?? "";
+    row.unilateral =
+      isUnilateral;
+
+    row.side =
+      isUnilateral
+        ? blockEl.querySelector(".block_side").value
+        : "";
+const exerciseKey = getCurrentExerciseKey();
+const exerciseMaxes = loadExerciseMaxes();
+
+const savedMaxes =
+  exerciseMaxes[exerciseKey] || {};
+
+if (isUnilateral) {
+  row.max_strength =
+    row.side === "left"
+      ? savedMaxes.left || ""
+      : savedMaxes.right || "";
+} else {
+  row.max_strength =
+    savedMaxes.bilateral || "";
+}
 
     const intensityRange =
   blockEl.querySelector(
@@ -710,10 +872,58 @@ function renderTable() {
 }
 
 function init() {
+
+  $("save_bodyweight").addEventListener(
+  "click",
+  saveBodyweight
+);
+
+$("change_bodyweight").addEventListener(
+  "click",
+  () => {
+    $("bodyweight_display")
+      .classList.add("hidden");
+
+    $("bodyweight_editor")
+      .classList.remove("hidden");
+  }
+);
+
+  $("change_exercise_max").addEventListener(
+  "click",
+  () => {
+    $("exercise_max_display").classList.add("hidden");
+
+    const isUnilateral =
+      $("unilateral").checked;
+
+    if (isUnilateral) {
+      $("exercise_max_unilateral_editor")
+        .classList.remove("hidden");
+
+      $("exercise_max_bilateral_editor")
+        .classList.add("hidden");
+    } else {
+      $("exercise_max_bilateral_editor")
+        .classList.remove("hidden");
+
+      $("exercise_max_unilateral_editor")
+        .classList.add("hidden");
+    }
+  }
+);
   $("add_set_block").addEventListener(
     "click",
     () => addSetBlock()
   );
+
+$("unilateral").addEventListener(
+  "change",
+  () => {
+    updateUnilateralVisibility();
+    updateExerciseMaxDisplay();
+  }
+);
 
   $("save_max_grades").addEventListener(
     "click",
@@ -729,11 +939,10 @@ $("exercise").addEventListener("change", () => {
     "click",
     saveExerciseMax
   );
-
-  $("change_exercise_max").addEventListener("click", () => {
-  $("exercise_max_display").classList.add("hidden");
-  $("exercise_max_editor").classList.remove("hidden");
-});
+  $("save_exercise_max_unilateral").addEventListener(
+  "click",
+  saveExerciseMaxUnilateral
+);
 
 $("change_climb_max").addEventListener("click", () => {
   $("climb_max_display").classList.add("hidden");
@@ -791,10 +1000,11 @@ $("change_climb_max").addEventListener("click", () => {
   updateBlockOptions();
   updateGradeOptions();
   updateEntryVisibility();
+  updateBodyweightDisplay();
   updateFingerOptionsVisibility();
   loadMaxGrades();
   renderTable();
-
+  updateUnilateralVisibility();
   if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register(
       "service-worker.js"

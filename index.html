@@ -71,6 +71,41 @@
       <label>Comments
         <textarea id="comments" rows="2" placeholder="Optional"></textarea>
       </label>
+
+      <div id="bodyweight_section">
+
+  <div id="bodyweight_display" class="hidden">
+    <span id="bodyweight_text"></span>
+
+    <button
+      id="change_bodyweight"
+      type="button"
+    >
+      Change
+    </button>
+  </div>
+
+  <div id="bodyweight_editor">
+    <label>
+      Bodyweight
+      <input
+        id="bodyweight"
+        type="number"
+        inputmode="decimal"
+        step="0.1"
+        placeholder="kg"
+      />
+    </label>
+
+    <button
+      id="save_bodyweight"
+      type="button"
+    >
+      Save bodyweight
+    </button>
+  </div>
+
+</div>
     </section>
 
     <section class="card">
@@ -95,30 +130,26 @@
         </label>
 
 <div id="exercise_max_section">
+<div id="exercise_max_display" class="hidden">
+  <span id="exercise_max_text"></span>
 
-  <!-- Shown when a maximum is already saved -->
-  <div id="exercise_max_display" class="hidden">
-    <span id="exercise_max_text"></span>
-
-    <button
-      id="change_exercise_max"
-      type="button"
-    >
-      Change
-    </button>
-  </div>
-
-  <!-- Shown when no maximum exists, or after clicking Change -->
-  <div id="exercise_max_editor">
+  <button
+    id="change_exercise_max"
+    type="button"
+  >
+    Change
+  </button>
+</div>
+  <!-- Bilateral maximum -->
+  <div id="exercise_max_bilateral_editor">
 
     <label>
       Maximum strength
       <input
         id="exercise_max_strength"
-        type="number"
-        inputmode="decimal"
-        step="0.5"
-        placeholder="Enter max"
+        type="text"
+        inputmode="text"
+        placeholder="e.g. 100, BW, BW+20"
       />
     </label>
 
@@ -126,12 +157,56 @@
       id="save_exercise_max"
       type="button"
     >
-      Save maximum strength
+      Save bilateral max
+    </button>
+
+  </div>
+
+
+  <!-- Left / Right maximums -->
+  <div
+    id="exercise_max_unilateral_editor"
+    class="hidden"
+  >
+
+    <label>
+      Left max
+      <input
+        id="exercise_max_left"
+        type="text"
+        inputmode="text"
+        placeholder="e.g. 35, BW+10"
+      />
+    </label>
+
+    <label>
+      Right max
+      <input
+        id="exercise_max_right"
+        type="text"
+        inputmode="text"
+        placeholder="e.g. 38, BW+12"
+      />
+    </label>
+
+    <button
+      id="save_exercise_max_unilateral"
+      type="button"
+    >
+      Save left / right max
     </button>
 
   </div>
 
 </div>
+
+<label class="checkbox-label">
+  <input
+    id="unilateral"
+    type="checkbox"
+  />
+  <span>Unilateral</span>
+</label>
 
 <label class="checkbox-label">
   <input
