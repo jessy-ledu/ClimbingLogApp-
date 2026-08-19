@@ -38,6 +38,305 @@ const EXERCISE_MAXES_KEY = "climbingLog_exerciseMaxStrengths";
 
 let rows = loadRows();
 
+function addExerciseBlock() {
+  const exerciseBlock = document.createElement("div");
+  exerciseBlock.className = "exercise-block";
+
+  exerciseBlock.innerHTML = `
+    <div class="exercise-block-header">
+
+      <label>
+        Block
+        <select class="exercise_block_select"></select>
+      </label>
+
+      <label>
+        Exercise
+        <select class="exercise_select"></select>
+      </label>
+
+      <button
+        type="button"
+        class="remove_exercise_block"
+      >
+        ×
+      </button>
+
+    </div>
+
+    <div class="exercise_max_section"></div>
+
+    <label class="checkbox-label">
+      <input
+        class="exercise_unilateral"
+        type="checkbox"
+      />
+      <span>Unilateral</span>
+    </label>
+
+    <label class="checkbox-label">
+      <input
+        class="exercise_explosive"
+        type="checkbox"
+      />
+      <span>Explosive strength</span>
+    </label>
+
+    <div class="exercise_finger_options hidden">
+
+      <label class="checkbox-label">
+        <input
+          class="exercise_active_strength"
+          type="checkbox"
+        />
+        <span>Active strength</span>
+      </label>
+
+      <label>
+        Grip type
+        <select class="exercise_grip_type">
+          <option value="half_crimp">Half crimp</option>
+          <option value="open_hand">Open hand</option>
+          <option value="three_finger_drag">Three-finger drag</option>
+          <option value="two_finger_pocket">Two-finger pocket</option>
+          <option value="mono_pocket">Mono pocket</option>
+        </select>
+      </label>
+
+    </div>
+
+    <div class="exercise_set_blocks"></div>
+
+    <button
+      type="button"
+      class="add_set_block"
+    >
+      + Add set block
+    </button>
+
+    <label>
+      RPE
+      <select class="exercise_rpe">
+        <option value=""></option>
+        <option>1</option>
+        <option>2</option>
+        <option>3</option>
+        <option>4</option>
+        <option>5</option>
+        <option>6</option>
+        <option>7</option>
+        <option>8</option>
+        <option>9</option>
+        <option>10</option>
+      </select>
+    </label>
+
+    <label>
+      Exercise comment
+      <textarea
+        class="exercise_comment"
+        rows="2"
+        placeholder="Optional"
+      ></textarea>
+    </label>
+
+  `;
+
+  $("exercise_blocks").appendChild(exerciseBlock);
+
+  initializeExerciseBlock(exerciseBlock);
+}
+
+function initializeExerciseBlock(exerciseBlock) {
+  const blockSelect =
+    exerciseBlock.querySelector(".exercise_block_select");
+
+  const exerciseSelect =
+    exerciseBlock.querySelector(".exercise_select");
+
+  setOptions(
+    blockSelect,
+    Object.keys(BLOCKS)
+  );
+
+  function updateExerciseList() {
+    const selectedBlock =
+      blockSelect.value;
+
+    setOptions(
+      exerciseSelect,
+      BLOCKS[selectedBlock] || []
+    );
+
+    updateExerciseBlockOptions(
+      exerciseBlock
+    );
+  }
+
+  blockSelect.addEventListener(
+    "change",
+    updateExerciseList
+  );
+
+  exerciseSelect.addEventListener(
+    "change",
+    () => {
+      updateExerciseBlockOptions(
+        exerciseBlock
+      );
+    }
+  );
+
+  exerciseBlock
+    .querySelector(".remove_exercise_block")
+    .addEventListener("click", () => {
+      exerciseBlock.remove();
+    });
+
+  exerciseBlock
+    .querySelector(".add_set_block")
+    .addEventListener("click", () => {
+      addSetBlockToExercise(
+        exerciseBlock
+      );
+    });
+
+  exerciseBlock
+    .querySelector(".exercise_unilateral")
+    .addEventListener("change", () => {
+      updateExerciseBlockOptions(
+        exerciseBlock
+      );
+    });
+
+  updateExerciseList();
+
+  addSetBlockToExercise(
+    exerciseBlock
+  );
+}
+
+function updateExerciseBlockOptions(exerciseBlock) {
+  const block =
+    exerciseBlock
+      .querySelector(".exercise_block_select")
+      .value;
+
+  const unilateral =
+    exerciseBlock
+      .querySelector(".exercise_unilateral")
+      .checked;
+
+  const fingerOptions =
+    exerciseBlock
+      .querySelector(".exercise_finger_options");
+
+  fingerOptions.classList.toggle(
+    "hidden",
+    block !== "Fingers"
+  );
+
+  exerciseBlock
+    .querySelectorAll(".block_side")
+    .forEach(sideSelect => {
+      sideSelect.classList.toggle(
+        "hidden",
+        !unilateral
+      );
+    });
+}
+
+function addSetBlockToExercise(exerciseBlock) {
+  const div = document.createElement("div");
+  div.className = "set-block";
+
+  div.innerHTML = `
+    <input
+      class="block_sets"
+      type="number"
+      inputmode="numeric"
+      placeholder="Sets"
+    >
+
+    <input
+      class="block_rep"
+      type="number"
+      inputmode="numeric"
+      placeholder="Rep"
+    >
+
+    <input
+      class="block_load"
+      type="text"
+      placeholder="Load"
+    >
+
+    <select class="block_intensity_range">
+      <option value="<60">&lt;60%</option>
+      <option value="60-70">60–70%</option>
+      <option value="70-80">70–80%</option>
+      <option value="80-90">80–90%</option>
+      <option value="90-100">90–100%</option>
+      <option value=">100">&gt;100%</option>
+      <option value="custom">Custom</option>
+    </select>
+
+    <input
+      class="block_custom_intensity hidden"
+      type="number"
+      inputmode="decimal"
+      step="0.5"
+      placeholder="% max"
+    >
+
+    <select class="block_side hidden">
+      <option value="left">Left</option>
+      <option value="right">Right</option>
+    </select>
+
+    <button
+      type="button"
+      class="remove_set_block"
+    >
+      ×
+    </button>
+  `;
+
+  exerciseBlock
+    .querySelector(".exercise_set_blocks")
+    .appendChild(div);
+
+  div
+    .querySelector(".remove_set_block")
+    .addEventListener("click", () => {
+      div.remove();
+    });
+
+  const intensitySelect =
+    div.querySelector(
+      ".block_intensity_range"
+    );
+
+  const customInput =
+    div.querySelector(
+      ".block_custom_intensity"
+    );
+
+  intensitySelect.addEventListener(
+    "change",
+    () => {
+      customInput.classList.toggle(
+        "hidden",
+        intensitySelect.value !== "custom"
+      );
+    }
+  );
+
+  updateExerciseBlockOptions(
+    exerciseBlock
+  );
+}
+
 function updateBodyweightDisplay() {
   const savedBodyweight =
     localStorage.getItem(BODYWEIGHT_KEY) || "";
@@ -884,60 +1183,10 @@ $("change_bodyweight").addEventListener(
   }
 );
 
-  $("change_exercise_max").addEventListener(
-  "click",
-  () => {
-    $("exercise_max_display").classList.add("hidden");
-
-    const isUnilateral =
-      $("unilateral").checked;
-
-    if (isUnilateral) {
-      $("exercise_max_unilateral_editor")
-        .classList.remove("hidden");
-
-      $("exercise_max_bilateral_editor")
-        .classList.add("hidden");
-    } else {
-      $("exercise_max_bilateral_editor")
-        .classList.remove("hidden");
-
-      $("exercise_max_unilateral_editor")
-        .classList.add("hidden");
-    }
-  }
-);
-  $("add_set_block").addEventListener(
-    "click",
-    () => addSetBlock()
-  );
-
-$("unilateral").addEventListener(
-  "change",
-  () => {
-    updateUnilateralVisibility();
-    updateExerciseMaxDisplay();
-  }
-);
-
   $("save_max_grades").addEventListener(
     "click",
     saveMaxGrades
   );
-
-$("exercise").addEventListener("change", () => {
-  updateExerciseMaxDisplay();
-  updateAllSetBlockIntensities();
-});
-
-  $("save_exercise_max").addEventListener(
-    "click",
-    saveExerciseMax
-  );
-  $("save_exercise_max_unilateral").addEventListener(
-  "click",
-  saveExerciseMaxUnilateral
-);
 
 $("change_climb_max").addEventListener("click", () => {
   $("climb_max_display").classList.add("hidden");
@@ -955,12 +1204,7 @@ $("change_climb_max").addEventListener("click", () => {
     entryType !== "boulder"
   );
 });
-  $("block").addEventListener("change", () => {
-  updateExerciseOptions();
-  updateFingerOptionsVisibility();
-  updateAllSetBlockIntensities();
-});
-  updateExerciseMaxDisplay();
+
   $("session_type").addEventListener(
     "change",
     updateEntryVisibility
@@ -987,19 +1231,21 @@ $("change_climb_max").addEventListener("click", () => {
   );
 
   // Initial state
-  addSetBlock();
+  addExerciseBlock();
+
+  $("add_exercise_block").addEventListener(
+  "click",
+  addExerciseBlock
+);
 
   $("date").value =
     new Date().toISOString().slice(0, 10);
 
-  updateBlockOptions();
   updateGradeOptions();
   updateEntryVisibility();
   updateBodyweightDisplay();
-  updateFingerOptionsVisibility();
   loadMaxGrades();
   renderTable();
-  updateUnilateralVisibility();
   if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./service-worker.js", {
     updateViaCache: "none"

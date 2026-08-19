@@ -120,136 +120,21 @@
         </select>
       </label>
 
-      <div id="exercise_form">
-        <label>Block
-          <select id="block"></select>
-        </label>
-
-        <label>Exercise
-          <select id="exercise"></select>
-        </label>
-
-<div id="exercise_max_section">
-<div id="exercise_max_display" class="hidden">
-  <span id="exercise_max_text"></span>
+<div id="exercise_form">
+    
+  <div id="exercise_blocks"></div>
 
   <button
-    id="change_exercise_max"
     type="button"
+    id="add_exercise_block"
   >
-    Change
+    + Add exercise
   </button>
-</div>
-  <!-- Bilateral maximum -->
-  <div id="exercise_max_bilateral_editor">
-
-    <label>
-      Maximum strength
-      <input
-        id="exercise_max_strength"
-        type="text"
-        inputmode="text"
-        placeholder="e.g. 100, BW, BW+20"
-      />
-    </label>
-
-    <button
-      id="save_exercise_max"
-      type="button"
-    >
-      Save bilateral max
-    </button>
-
-  </div>
-
-
-  <!-- Left / Right maximums -->
-  <div
-    id="exercise_max_unilateral_editor"
-    class="hidden"
-  >
-
-    <label>
-      Left max
-      <input
-        id="exercise_max_left"
-        type="text"
-        inputmode="text"
-        placeholder="e.g. 35, BW+10"
-      />
-    </label>
-
-    <label>
-      Right max
-      <input
-        id="exercise_max_right"
-        type="text"
-        inputmode="text"
-        placeholder="e.g. 38, BW+12"
-      />
-    </label>
-
-    <button
-      id="save_exercise_max_unilateral"
-      type="button"
-    >
-      Save left / right max
-    </button>
-
-  </div>
 
 </div>
 
-<label class="checkbox-label">
-  <input
-    id="unilateral"
-    type="checkbox"
-  />
-  <span>Unilateral</span>
-</label>
 
-<label class="checkbox-label">
-  <input
-    id="explosive_strength"
-    type="checkbox"
-  />
-  <span>Explosive strength</span>
-</label>
-
-<div id="finger_options" class="hidden">
-  <label class="checkbox-label">
-    <input
-      id="active_strength"
-      type="checkbox"
-    />
-    <span>Active strength</span>
-  </label>
-
-<label>Grip type
-  <select id="grip_type">
-    <option value="half_crimp" selected>Half crimp</option>
-    <option value="open_hand">Open hand</option>
-    <option value="three_finger_drag">Three-finger drag</option>
-    <option value="two_finger_pocket">Two-finger pocket</option>
-    <option value="mono_pocket">Mono pocket</option>
-  </select>
-</label>
-</div>
-
-<div id="set_blocks"></div>
-
-<button type="button" id="add_set_block">+ Add set block</button>
-
-        <label>RPE (1st set)
-          <select id="ex_rpe">
-            <option value=""></option>
-            <option>1</option><option>2</option><option>3</option><option>4</option><option>5</option>
-            <option>6</option><option>7</option><option>8</option><option>9</option><option>10</option>
-          </select>
-        </label>
-      </div>
-
-      <div id="climb_form" class="hidden">
+ <div id="climb_form" class="hidden">
  <div id="climb_max_section">
 
   <!-- Compact display when a max is already saved -->
