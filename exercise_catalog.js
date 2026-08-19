@@ -18,9 +18,11 @@ window.EXERCISE_BLOCKS = {
     "Hanging Core Strength",
     "Hanging Core Strength-Endurance",
     "Plank",
+    "Front lever",
+    "TRX Body Saw",
     "Side Plank",
-    "Hanging Knee Raise",
-    "Hanging Leg Raise",
+    "Hanging Knees to Elbows",
+    "Toes to bar",
     "Ab Wheel Rollout"
   ],
   "Forearm": [
@@ -42,8 +44,7 @@ window.EXERCISE_BLOCKS = {
     "Pull-Up",
     "Chin-Up",
     "Scapular Pull-Up",
-    "Lock-Off",
-    "Assisted One-Arm Lock-Off"
+    "Lock-Off"
   ],
   "Horizontal pull": [
     "Row",
@@ -83,6 +84,7 @@ window.EXERCISE_BLOCKS = {
   ],
   "Squat / lunge": [
     "Back Squat",
+    "Pistol Squat",
     "Front Squat",
     "Split Squat",
     "Bulgarian Split Squat"
@@ -120,13 +122,19 @@ window.EXERCISE_CATALOG = {
   "Plank": {
     "default_intensity_range_percent_1rm": "55–70"
   },
+  "Front lever": {
+    "default_intensity_range_percent_1rm": "70–100"
+  },
+  "TRX Body Saw": {
+    "default_intensity_range_percent_1rm": "55–70"
+  },
   "Side Plank": {
     "default_intensity_range_percent_1rm": "55–70"
   },
-  "Hanging Knee Raise": {
+  "Hanging Knees to Elbows": {
     "default_intensity_range_percent_1rm": "70–85"
   },
-  "Hanging Leg Raise": {
+  "Toes to bar": {
     "default_intensity_range_percent_1rm": "70–85"
   },
   "Ab Wheel Rollout": {
@@ -164,9 +172,6 @@ window.EXERCISE_CATALOG = {
   },
   "Lock-Off": {
     "default_intensity_range_percent_1rm": "70–85"
-  },
-  "Assisted One-Arm Lock-Off": {
-    "default_intensity_range_percent_1rm": "85–100"
   },
   "Row": {
     "default_intensity_range_percent_1rm": "70–85"
@@ -220,6 +225,9 @@ window.EXERCISE_CATALOG = {
     "default_intensity_range_percent_1rm": "70–85"
   },
   "Back Squat": {
+    "default_intensity_range_percent_1rm": "70–85"
+  },
+  "Pistol Squat": {
     "default_intensity_range_percent_1rm": "70–85"
   },
   "Front Squat": {
