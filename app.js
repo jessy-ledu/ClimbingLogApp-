@@ -26,7 +26,7 @@ const COLUMNS = [
   "session_rpe", "focus", "focus_level", "comments",   "bodyweight",
   "entry_type", "block", "exercise", "unilateral",
   "side", "strength_intensity_range",
-  "custom_strength_intensity", "explosive_strength", "active_strength", "arm_configuration",
+  "custom_strength_intensity", "explosive_strength", "active_strength",
   "grip_type", "sets", "rep", "external_load",
   "grade", "style", "length", "attempts", "mode", "done", "rpe",
   "entry_comment"
@@ -199,7 +199,6 @@ function updateFingerOptionsVisibility() {
   // Reset finger-specific values when another block is selected.
   if (!isFingerBlock) {
     $("active_strength").checked = false;
-    $("arm_configuration").value = "two_arms";
     $("grip_type").value = "half_crimp";
   }
 }
@@ -738,10 +737,6 @@ row.custom_strength_intensity =
       isFingerBlock
         ? $("active_strength").checked
         : false;
-    row.arm_configuration =
-      isFingerBlock
-        ? $("arm_configuration").value
-        : "";
     row.grip_type =
       isFingerBlock
         ? $("grip_type").value
