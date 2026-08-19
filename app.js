@@ -1,4 +1,4 @@
-const STORAGE_KEY = "climbing_log_v5";
+const STORAGE_KEY = "climbing-log-v0.6.1";
 
 const BLOCKS = window.EXERCISE_BLOCKS || {};
 const EXERCISE_CATALOG = window.EXERCISE_CATALOG || {};
