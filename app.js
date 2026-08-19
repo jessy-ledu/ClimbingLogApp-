@@ -1006,10 +1006,10 @@ $("change_climb_max").addEventListener("click", () => {
   renderTable();
   updateUnilateralVisibility();
   if ("serviceWorker" in navigator) {
-    navigator.serviceWorker.register(
-      "service-worker.js"
-    );
-  }
+  navigator.serviceWorker.register("./service-worker.js", {
+    updateViaCache: "none"
+  });
+}
 }
 
 init();
