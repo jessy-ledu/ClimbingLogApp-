@@ -180,19 +180,71 @@ function initializeExerciseBlock(exerciseBlock) {
     );
   }
 
+  function resetExerciseInputs(exerciseBlock) {
+  exerciseBlock
+    .querySelector(".exercise_unilateral")
+    .checked = false;
+
+  exerciseBlock
+    .querySelector(".exercise_explosive")
+    .checked = false;
+
+  exerciseBlock
+    .querySelector(".exercise_active_strength")
+    .checked = false;
+
+  exerciseBlock
+    .querySelector(".exercise_grip_type")
+    .value = "half_crimp";
+
+  exerciseBlock
+    .querySelector(".exercise_rpe")
+    .value = "1";
+
+  exerciseBlock
+    .querySelector(".exercise_comment")
+    .value = "";
+
+  const container =
+    exerciseBlock.querySelector(
+      ".exercise_set_blocks"
+    );
+
+  container.innerHTML = "";
+
+  addSetBlockToExercise(
+    exerciseBlock,
+    true
+  );
+
+  updateExerciseBlockOptions(
+    exerciseBlock
+  );
+}
+  function resetExerciseSetBlocks(exerciseBlock) {
+  const container =
+    exerciseBlock.querySelector(
+      ".exercise_set_blocks"
+    );
+
+  container.innerHTML = "";
+
+  addSetBlockToExercise(
+    exerciseBlock,
+    true
+  );
+}
   blockSelect.addEventListener(
     "change",
     updateExerciseList
   );
 
-  exerciseSelect.addEventListener(
-    "change",
-    () => {
-      updateExerciseBlockOptions(
-        exerciseBlock
-      );
-    }
-  );
+exerciseSelect.addEventListener(
+  "change",
+  () => {
+    resetExerciseInputs(exerciseBlock);
+  }
+);
 
   exerciseBlock
     .querySelector(".remove_exercise_block")
@@ -253,7 +305,29 @@ function updateExerciseBlockOptions(exerciseBlock) {
     });
 }
 
-function addSetBlockToExercise(exerciseBlock) {
+function addSetBlockToExercise(
+  exerciseBlock,
+  useDefaults = true
+) {
+
+  const exerciseName =
+  exerciseBlock
+    .querySelector(".exercise_select")
+    .value;
+
+const exerciseData =
+  EXERCISE_CATALOG[exerciseName] || {};
+
+const defaultSets =
+  useDefaults
+    ? exerciseData.sets ?? ""
+    : "";
+
+const defaultReps =
+  useDefaults
+    ? exerciseData.reps ?? ""
+    : "";
+
   const div = document.createElement("div");
   div.className = "set-block";
 
@@ -263,6 +337,7 @@ function addSetBlockToExercise(exerciseBlock) {
       type="number"
       inputmode="numeric"
       placeholder="Sets"
+        value="${defaultSets}"
     >
 
     <input
@@ -270,6 +345,7 @@ function addSetBlockToExercise(exerciseBlock) {
       type="number"
       inputmode="numeric"
       placeholder="Rep"
+      value="${defaultReps}"
     >
 
     <input
@@ -951,114 +1027,227 @@ function addRow() {
   const header = getHeader();
   const entryType = $("entry_type").value;
 
-  let row = Object.fromEntries(COLUMNS.map(c => [c, ""]));
-  Object.assign(row, header);
-  row.entry_type = entryType;
+  // =========================
+  // EXERCISES
+  // =========================
 
-if (entryType === "exercise") {
-  const setBlocks = document.querySelectorAll(".set-block");
+  if (entryType === "exercise") {
 
-  for (const blockEl of setBlocks) {
-  const range =
-    blockEl.querySelector(
-      ".block_intensity_range"
-    ).value;
+    const exerciseBlocks =
+      document.querySelectorAll(".exercise-block");
 
-  const custom =
-    blockEl.querySelector(
-      ".block_custom_intensity"
-    ).value;
+    // Validate everything BEFORE saving anything.
+    for (const exerciseBlock of exerciseBlocks) {
 
-  if (
-    range === "custom" &&
-    custom === ""
-  ) {
-    alert(
-      "Enter a custom intensity value for every Custom set block."
-    );
+      const setBlocks =
+        exerciseBlock.querySelectorAll(".set-block");
 
-    return;
-  }
-}
-  setBlocks.forEach(blockEl => {
-    let row = Object.fromEntries(COLUMNS.map(c => [c, ""]));
-    Object.assign(row, header);
+      for (const setBlock of setBlocks) {
 
-    row.entry_type = "exercise";
-    row.block = $("block").value;
-    row.exercise = $("exercise").value;
+        const range =
+          setBlock.querySelector(
+            ".block_intensity_range"
+          ).value;
 
-        const isUnilateral =
-      $("unilateral").checked;
+        const custom =
+          setBlock.querySelector(
+            ".block_custom_intensity"
+          ).value;
 
-    row.unilateral =
-      isUnilateral;
+        if (
+          range === "custom" &&
+          custom === ""
+        ) {
+          alert(
+            "Enter a custom intensity value for every Custom set block."
+          );
+          return;
+        }
+      }
+    }
 
-    row.side =
-      isUnilateral
-        ? blockEl.querySelector(".block_side").value
-        : "";
-const exerciseKey = getCurrentExerciseKey();
-const exerciseMaxes = loadExerciseMaxes();
+    // Everything valid → create dataframe rows.
+    exerciseBlocks.forEach(exerciseBlock => {
 
-const savedMaxes =
-  exerciseMaxes[exerciseKey] || {};
+      const block =
+        exerciseBlock.querySelector(
+          ".exercise_block_select"
+        ).value;
 
-if (isUnilateral) {
-  row.max_strength =
-    row.side === "left"
-      ? savedMaxes.left || ""
-      : savedMaxes.right || "";
-} else {
-  row.max_strength =
-    savedMaxes.bilateral || "";
-}
+      const exercise =
+        exerciseBlock.querySelector(
+          ".exercise_select"
+        ).value;
 
-    const intensityRange =
-  blockEl.querySelector(
-    ".block_intensity_range"
-  ).value;
+      const isUnilateral =
+        exerciseBlock.querySelector(
+          ".exercise_unilateral"
+        ).checked;
 
-const customIntensity =
-  blockEl.querySelector(
-    ".block_custom_intensity"
-  ).value;
+      const explosive =
+        exerciseBlock.querySelector(
+          ".exercise_explosive"
+        ).checked;
 
-row.strength_intensity_range =
-  intensityRange;
+      const rpe =
+        exerciseBlock.querySelector(
+          ".exercise_rpe"
+        ).value;
 
-row.custom_strength_intensity =
-  intensityRange === "custom"
-    ? customIntensity
-    : "";
-    row.explosive_strength =$("explosive_strength").checked;
-    row.sets = blockEl.querySelector(".block_sets").value;
-    row.rep = blockEl.querySelector(".block_rep").value;
-    row.external_load = blockEl.querySelector(".block_load").value;
-    row.rpe = $("ex_rpe").value;
-    row.entry_comment = $("entry_comment").value;
-    const isFingerBlock =
-      $("block").value === "Fingers";
-    row.active_strength =
-      isFingerBlock
-        ? $("active_strength").checked
-        : false;
-    row.grip_type =
-      isFingerBlock
-        ? $("grip_type").value
-        : "";
-    rows.push(row);
-  });
+      const comment =
+        exerciseBlock.querySelector(
+          ".exercise_comment"
+        ).value;
+
+      const isFingerBlock =
+        block === "Fingers";
+
+      const activeStrength =
+        isFingerBlock
+          ? exerciseBlock.querySelector(
+              ".exercise_active_strength"
+            ).checked
+          : false;
+
+      const gripType =
+        isFingerBlock
+          ? exerciseBlock.querySelector(
+              ".exercise_grip_type"
+            ).value
+          : "";
+
+      const exerciseData =
+        EXERCISE_CATALOG[exercise];
+
+      const exerciseKey =
+        exerciseData?.exercise_id ||
+        exercise;
+
+      const exerciseMaxes =
+        loadExerciseMaxes();
+
+      const savedMaxes =
+        exerciseMaxes[exerciseKey] || {};
+
+      const setBlocks =
+        exerciseBlock.querySelectorAll(
+          ".set-block"
+        );
+
+      setBlocks.forEach(setBlock => {
+
+        let row =
+          Object.fromEntries(
+            COLUMNS.map(c => [c, ""])
+          );
+
+        Object.assign(row, header);
+
+        row.entry_type = "exercise";
+        row.block = block;
+        row.exercise = exercise;
+
+        row.unilateral = isUnilateral;
+
+        row.side =
+          isUnilateral
+            ? setBlock.querySelector(
+                ".block_side"
+              ).value
+            : "";
+
+        if (isUnilateral) {
+          row.max_strength =
+            row.side === "left"
+              ? savedMaxes.left || ""
+              : savedMaxes.right || "";
+        } else {
+          row.max_strength =
+            savedMaxes.bilateral || "";
+        }
+
+        const intensityRange =
+          setBlock.querySelector(
+            ".block_intensity_range"
+          ).value;
+
+        const customIntensity =
+          setBlock.querySelector(
+            ".block_custom_intensity"
+          ).value;
+
+        row.strength_intensity_range =
+          intensityRange;
+
+        row.custom_strength_intensity =
+          intensityRange === "custom"
+            ? customIntensity
+            : "";
+
+        row.explosive_strength =
+          explosive;
+
+        row.sets =
+          setBlock.querySelector(
+            ".block_sets"
+          ).value;
+
+        row.rep =
+          setBlock.querySelector(
+            ".block_rep"
+          ).value;
+
+        row.external_load =
+          setBlock.querySelector(
+            ".block_load"
+          ).value;
+
+        row.rpe = rpe;
+        row.entry_comment = comment;
+
+        row.active_strength =
+          activeStrength;
+
+        row.grip_type =
+          gripType;
+
+        rows.push(row);
+      });
+    });
 
   saveRows();
-
-  $("entry_comment").value = "";
-
   renderTable();
+
+  const exerciseContainer = $("exercise_blocks");
+
+  exerciseContainer.replaceChildren();
+  addExerciseBlock();
+
+  $("exercise_form").classList.remove("hidden");
+
   return;
-} else {
-const climbContext = getClimbContext();
-  if (!validateClimbMaxGrade(climbContext)) {
+  }
+  // =========================
+  // ROUTE / BOULDER
+  // =========================
+
+  const row =
+    Object.fromEntries(
+      COLUMNS.map(c => [c, ""])
+    );
+
+  Object.assign(row, header);
+
+  row.entry_type = entryType;
+
+  const climbContext =
+    getClimbContext();
+
+  if (
+    !validateClimbMaxGrade(
+      climbContext
+    )
+  ) {
     return;
   }
 
@@ -1067,26 +1256,40 @@ const climbContext = getClimbContext();
       ? "Bloc"
       : "Route";
 
-  row.climb_type = climbContext.climb_type;
-  row.grade = $("grade").value;
+  row.climb_type =
+    climbContext.climb_type;
 
-  // Snapshot stored permanently in this row
-  row.max_grade = climbContext.max_grade;
-  row.max_grade_system = climbContext.max_grade_system;
+  row.grade =
+    $("grade").value;
 
-  row.style = $("style").value;
-  row.length = $("length").value;
-  row.attempts = $("attempts").value;
-  row.rep = $("attempts").value;
-  row.mode = $("mode").value;
-  row.done = $("done").value;
-  row.rpe = $("climb_rpe").value;
-  row.entry_comment = $("entry_comment").value;
-}
+  row.max_grade =
+    climbContext.max_grade;
+
+  row.max_grade_system =
+    climbContext.max_grade_system;
+
+  row.style =
+    $("style").value;
+
+  row.length =
+    $("length").value;
+
+  row.attempts =
+    $("attempts").value;
+
+  row.rep =
+    $("attempts").value;
+
+  row.mode =
+    $("mode").value;
+
+  row.done =
+    $("done").value;
+
+  row.rpe =
+    $("climb_rpe").value;
 
   rows.push(row);
-
-  $("entry_comment").value = "";
 
   saveRows();
   renderTable();

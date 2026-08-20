@@ -102,174 +102,288 @@ window.EXERCISE_BLOCKS = {
 
 window.EXERCISE_CATALOG = {
   "Active Recovery": {
-    "default_intensity_range_percent_1rm": "25–35"
+    "default_intensity_range_percent_1rm": "25–35",
+    "sets": "30",
+    "reps": ""
   },
   "Mobility AO protocol": {
-    "default_intensity_range_percent_1rm": "25–35"
+    "default_intensity_range_percent_1rm": "25–35",
+    "sets": "1",
+    "reps": "5"
   },
   "CARC": {
-    "default_intensity_range_percent_1rm": "25–35"
+    "default_intensity_range_percent_1rm": "25–35",
+    "sets": "10",
+    "reps": ""
   },
   "Floor Abs": {
-    "default_intensity_range_percent_1rm": "55–70"
+    "default_intensity_range_percent_1rm": "55–70",
+    "sets": "5",
+    "reps": "20"
   },
   "Hanging Core Strength": {
-    "default_intensity_range_percent_1rm": "85–100"
+    "default_intensity_range_percent_1rm": "85–100",
+    "sets": "6",
+    "reps": ""
   },
   "Hanging Core Strength-Endurance": {
-    "default_intensity_range_percent_1rm": "55–70"
+    "default_intensity_range_percent_1rm": "55–70",
+    "sets": "8",
+    "reps": ""
   },
   "Plank": {
-    "default_intensity_range_percent_1rm": "55–70"
+    "default_intensity_range_percent_1rm": "55–70",
+    "sets": "3",
+    "reps": ""
   },
   "Front lever": {
-    "default_intensity_range_percent_1rm": "70–100"
+    "default_intensity_range_percent_1rm": "70–100",
+    "sets": "3",
+    "reps": ""
   },
   "TRX Body Saw": {
-    "default_intensity_range_percent_1rm": "55–70"
+    "default_intensity_range_percent_1rm": "55–70",
+    "sets": "3",
+    "reps": "10"
   },
   "Side Plank": {
-    "default_intensity_range_percent_1rm": "55–70"
+    "default_intensity_range_percent_1rm": "55–70",
+    "sets": "4",
+    "reps": ""
   },
   "Hanging Knees to Elbows": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "4",
+    "reps": "10"
   },
   "Toes to bar": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "5",
+    "reps": "6"
   },
   "Ab Wheel Rollout": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "5",
+    "reps": "6"
   },
   "Wrist curl extension": {
-    "default_intensity_range_percent_1rm": "85–100"
+    "default_intensity_range_percent_1rm": "85–100",
+    "sets": "5",
+    "reps": "8"
   },
   "Wrist curl flexion": {
-    "default_intensity_range_percent_1rm": "85–100"
+    "default_intensity_range_percent_1rm": "85–100",
+    "sets": "5",
+    "reps": "8"
   },
   "Wrist curl flexion barbell": {
-    "default_intensity_range_percent_1rm": "85–100"
+    "default_intensity_range_percent_1rm": "85–100",
+    "sets": "5",
+    "reps": "8"
   },
   "Finger curl one arm": {
-    "default_intensity_range_percent_1rm": "85–100"
+    "default_intensity_range_percent_1rm": "85–100",
+    "sets": "5",
+    "reps": "8"
   },
   "Finger hang": {
-    "default_intensity_range_percent_1rm": "85–100"
+    "default_intensity_range_percent_1rm": "85–100",
+    "sets": "5",
+    "reps": "8"
   },
   "Campus Board": {
-    "default_intensity_range_percent_1rm": "85–100"
+    "default_intensity_range_percent_1rm": "85–100",
+    "sets": "5",
+    "reps": "4"
   },
   "Contact Strength": {
-    "default_intensity_range_percent_1rm": "90–100"
+    "default_intensity_range_percent_1rm": "90–100",
+    "sets": "5",
+    "reps": "5"
   },
   "Pull-Up": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "5",
+    "reps": "6"
   },
   "Chin-Up": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "5",
+    "reps": "6"
   },
   "Scapular Pull-Up": {
-    "default_intensity_range_percent_1rm": "30–50"
+    "default_intensity_range_percent_1rm": "30–50",
+    "sets": "4",
+    "reps": "10"
   },
   "Lock-Off": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "6",
+    "reps": ""
   },
   "Row": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "4",
+    "reps": "10"
   },
   "Ring Row": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "4",
+    "reps": "10"
   },
   "Face Pull": {
-    "default_intensity_range_percent_1rm": "35–55"
+    "default_intensity_range_percent_1rm": "35–55",
+    "sets": "3",
+    "reps": "20"
   },
   "Push-Up": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "4",
+    "reps": "15"
   },
   "Ring Push-Up": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "4",
+    "reps": "10"
   },
   "Bench Press": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "5",
+    "reps": "6"
   },
   "Dip": {
-    "default_intensity_range_percent_1rm": "85–100"
+    "default_intensity_range_percent_1rm": "85–100",
+    "sets": "5",
+    "reps": "4"
   },
   "Overhead Press": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "5",
+    "reps": "5"
   },
   "Maximum Triceps Strength": {
-    "default_intensity_range_percent_1rm": "85–100"
+    "default_intensity_range_percent_1rm": "85–100",
+    "sets": "5",
+    "reps": "4"
   },
   "Maximum Biceps Strength": {
-    "default_intensity_range_percent_1rm": "85–100"
+    "default_intensity_range_percent_1rm": "85–100",
+    "sets": "5",
+    "reps": "4"
   },
   "Eccentric Biceps Curl": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "5",
+    "reps": "4"
   },
   "Pletnev Biceps Protocol": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "4",
+    "reps": "8"
   },
   "Deadlift": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "3",
+    "reps": "4"
   },
   "Romanian Deadlift": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "3",
+    "reps": "6"
   },
   "Single-Leg Romanian Deadlift": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "3",
+    "reps": "10"
   },
   "Hip Thrust": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "3",
+    "reps": "10"
   },
   "Nordic Hamstring Curl": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "3",
+    "reps": "4"
   },
   "Back Squat": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "3",
+    "reps": "5"
   },
   "Pistol Squat": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "3",
+    "reps": "5"
   },
   "Front Squat": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "3",
+    "reps": "5"
   },
   "Split Squat": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "3",
+    "reps": "10"
   },
   "Bulgarian Split Squat": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "3",
+    "reps": "10"
   },
   "Calf Raise": {
-    "default_intensity_range_percent_1rm": "70–85"
+    "default_intensity_range_percent_1rm": "70–85",
+    "sets": "3",
+    "reps": "15"
   },
   "Tibialis Raise": {
-    "default_intensity_range_percent_1rm": "55–70"
+    "default_intensity_range_percent_1rm": "55–70",
+    "sets": "3",
+    "reps": "15"
   },
   "Lower-Body Antagonist / Prehab": {
-    "default_intensity_range_percent_1rm": "35–55"
+    "default_intensity_range_percent_1rm": "35–55",
+    "sets": "5",
+    "reps": "10"
   },
   "Upper-Body Antagonist / Prehab": {
-    "default_intensity_range_percent_1rm": "35–55"
+    "default_intensity_range_percent_1rm": "35–55",
+    "sets": "5",
+    "reps": "10"
   },
   "External Rotation": {
-    "default_intensity_range_percent_1rm": "35–55"
+    "default_intensity_range_percent_1rm": "35–55",
+    "sets": "3",
+    "reps": "20"
   },
   "Internal Rotation": {
-    "default_intensity_range_percent_1rm": "35–55"
+    "default_intensity_range_percent_1rm": "35–55",
+    "sets": "3",
+    "reps": "20"
   },
   "Y-T-W Raise": {
-    "default_intensity_range_percent_1rm": "30–50"
+    "default_intensity_range_percent_1rm": "30–50",
+    "sets": "3",
+    "reps": "20"
   },
   "Lateral Raise": {
-    "default_intensity_range_percent_1rm": "55–70"
+    "default_intensity_range_percent_1rm": "55–70",
+    "sets": "5",
+    "reps": "10"
   },
   "Slab Balance & Movement": {
-    "default_intensity_range_percent_1rm": "35–45"
+    "default_intensity_range_percent_1rm": "35–45",
+    "sets": "",
+    "reps": ""
   },
   "Complex Coordination Drills": {
-    "default_intensity_range_percent_1rm": "50–70"
+    "default_intensity_range_percent_1rm": "50–70",
+    "sets": "",
+    "reps": ""
   },
   "Strength in Movement / PPO (Strength-Endurance)": {
-    "default_intensity_range_percent_1rm": "55–70"
+    "default_intensity_range_percent_1rm": "55–70",
+    "sets": "",
+    "reps": ""
   }
 };

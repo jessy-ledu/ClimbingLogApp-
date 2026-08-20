@@ -90,6 +90,9 @@ def generate_catalog() -> None:
         "default_intensity_range_%1rm",
     )
 
+    sets_column = find_column(headers, "sets")
+    reps_column = find_column(headers, "reps")
+
     blocks_catalog: OrderedDict[str, list[str]] = OrderedDict()
     exercise_catalog: OrderedDict[str, dict[str, str]] = OrderedDict()
 
@@ -119,6 +122,21 @@ def generate_catalog() -> None:
             else ""
         )
 
+        sets_value = row[sets_column]
+        reps_value = row[reps_column]
+
+        default_sets = (
+            str(sets_value).strip()
+            if sets_value is not None
+            else ""
+        )
+
+        default_reps = (
+            str(reps_value).strip()
+            if reps_value is not None
+            else ""
+        )
+
         if not exercise_blocks:
             print(
                 f"Warning: row {row_number} has no block: "
@@ -130,7 +148,11 @@ def generate_catalog() -> None:
         # Metadata stored for each exercise.
         exercise_catalog[exercise_name] = {
             "default_intensity_range_percent_1rm":
-                default_intensity_range
+                default_intensity_range,
+            "sets":
+                default_sets,
+            "reps":
+                default_reps,
         }
 
         # Exercise names grouped by block.
