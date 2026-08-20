@@ -43,6 +43,20 @@ function addExerciseBlock() {
   exerciseBlock.className = "exercise-block";
 
   exerciseBlock.innerHTML = `
+
+    <div class="local_entry_type_wrap hidden">
+      <label>
+        Entry type
+        <select class="local_entry_type">
+          <option value="exercise">Exercise</option>
+          <option value="route">Route</option>
+          <option value="boulder">Boulder</option>
+        </select>
+      </label>
+    </div>
+
+  <div class="exercise_entry_content">
+
     <div class="exercise-block-header">
 
       <label>
@@ -145,6 +159,96 @@ function addExerciseBlock() {
       x Remove exercise
     </button>
 
+  </div>
+
+  <div class="climb_entry_content hidden">
+
+  <div class="entry_max_grade_status"></div>
+
+  <label>
+    Grade
+    <select class="entry_grade"></select>
+  </label>
+
+  <label>
+    Style
+    <select class="entry_style">
+      <option value="S">Slab</option>
+      <option value="V">Vertical</option>
+      <option value="OH">Overhang</option>
+    </select>
+  </label>
+
+  <label>
+    Length
+    <select class="entry_length">
+      <option value="SH">Short</option>
+      <option value="M" selected>Medium</option>
+      <option value="L">Long</option>
+      <option value="EL">Extra long</option>
+    </select>
+  </label>
+
+  <label>
+    Attempts
+    <input
+      class="entry_attempts"
+      type="number"
+      inputmode="numeric"
+      placeholder="3"
+    />
+  </label>
+
+  <label>
+    Mode
+    <select class="entry_mode">
+      <option value="F">Flash</option>
+      <option value="O">Onsight</option>
+      <option value="R">Redpoint</option>
+    </select>
+  </label>
+
+  <label>
+    Done
+    <select class="entry_done">
+      <option value="Y">Yes</option>
+      <option value="N">No</option>
+    </select>
+  </label>
+
+  <label>
+    RPE (1st run)
+    <select class="entry_climb_rpe">
+      <option value="1" selected>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option>8</option>
+      <option>9</option>
+      <option>10</option>
+    </select>
+  </label>
+
+  <label>
+    Entry comment
+    <textarea
+      class="entry_climb_comment"
+      rows="2"
+      placeholder="Optional"
+    ></textarea>
+  </label>
+
+  <button
+    type="button"
+    class="remove_exercise_block"
+  >
+    x Remove entry
+  </button>
+
+</div>
   `;
 
   
@@ -160,6 +264,20 @@ function initializeExerciseBlock(exerciseBlock) {
 
   const exerciseSelect =
     exerciseBlock.querySelector(".exercise_select");
+
+    const localEntryType =
+  exerciseBlock.querySelector(
+    ".local_entry_type"
+  );
+
+  localEntryType.addEventListener(
+  "change",
+  () => {
+    updateEntryBlockType(
+      exerciseBlock
+    );
+  }
+);
 
   setOptions(
     blockSelect,
@@ -220,6 +338,10 @@ function initializeExerciseBlock(exerciseBlock) {
   updateExerciseBlockOptions(
     exerciseBlock
   );
+
+  updateEntryBlockType(
+  exerciseBlock
+);
 }
   function resetExerciseSetBlocks(exerciseBlock) {
   const container =
@@ -246,11 +368,18 @@ exerciseSelect.addEventListener(
   }
 );
 
-  exerciseBlock
-    .querySelector(".remove_exercise_block")
-    .addEventListener("click", () => {
-      exerciseBlock.remove();
-    });
+exerciseBlock
+  .querySelectorAll(
+    ".remove_exercise_block"
+  )
+  .forEach(button => {
+    button.addEventListener(
+      "click",
+      () => {
+        exerciseBlock.remove();
+      }
+    );
+  });
 
   exerciseBlock
     .querySelector(".add_set_block")
@@ -268,11 +397,15 @@ exerciseSelect.addEventListener(
       );
     });
 
-  updateExerciseList();
+updateExerciseList();
 
-  addSetBlockToExercise(
-    exerciseBlock
-  );
+addSetBlockToExercise(
+  exerciseBlock
+);
+
+updateEntryBlockType(
+  exerciseBlock
+);
 }
 
 function updateExerciseBlockOptions(exerciseBlock) {
@@ -303,6 +436,99 @@ function updateExerciseBlockOptions(exerciseBlock) {
         !unilateral
       );
     });
+}
+
+function updateEntryBlockType(exerciseBlock) {
+  const sessionType =
+    $("session_type").value;
+
+  const typeWrap =
+    exerciseBlock.querySelector(
+      ".local_entry_type_wrap"
+    );
+
+  const typeSelect =
+    exerciseBlock.querySelector(
+      ".local_entry_type"
+    );
+
+  const exerciseContent =
+    exerciseBlock.querySelector(
+      ".exercise_entry_content"
+    );
+
+  const climbContent =
+    exerciseBlock.querySelector(
+      ".climb_entry_content"
+    );
+
+  // Gym = exercise only
+  if (sessionType === "G") {
+    typeWrap.classList.add("hidden");
+    typeSelect.value = "exercise";
+
+    exerciseContent.classList.remove("hidden");
+    climbContent.classList.add("hidden");
+
+    return;
+  }
+
+  // Climbing = user may choose all 3
+  typeWrap.classList.remove("hidden");
+
+  const entryType =
+    typeSelect.value;
+
+  const isExercise =
+    entryType === "exercise";
+
+  exerciseContent.classList.toggle(
+    "hidden",
+    !isExercise
+  );
+
+  climbContent.classList.toggle(
+    "hidden",
+    isExercise
+  );
+
+  if (isExercise) {
+    return;
+  }
+
+  const gradeSelect =
+    exerciseBlock.querySelector(
+      ".entry_grade"
+    );
+
+  const grades =
+    entryType === "boulder"
+      ? BOULDER_GRADES
+      : ROUTE_GRADES;
+
+  setOptions(
+    gradeSelect,
+    grades
+  );
+
+  const savedMax =
+    entryType === "boulder"
+      ? localStorage.getItem(
+          MAX_BOULDER_GRADE_KEY
+        ) || ""
+      : localStorage.getItem(
+          MAX_ROUTE_GRADE_KEY
+        ) || "";
+
+  const maxText =
+    exerciseBlock.querySelector(
+      ".entry_max_grade_status"
+    );
+
+  maxText.textContent =
+    savedMax
+      ? `Max: ${savedMax}`
+      : "Maximum grade not set";
 }
 
 function addSetBlockToExercise(
@@ -752,34 +978,31 @@ function updateGradeOptions() {
 }
 
 function updateEntryVisibility() {
-  const sessionType = $("session_type").value;
-  const entryTypeSelect = $("entry_type");
-  const entryTypeLabel = $("entry_type_label");
+  const sessionType =
+    $("session_type").value;
 
-  if (sessionType === "G") {
-    entryTypeSelect.value = "exercise";
-    entryTypeSelect.disabled = true;
-    entryTypeLabel.classList.add("hidden");
-  } else {
-    entryTypeSelect.disabled = false;
-    entryTypeLabel.classList.remove("hidden");
-  }
+  // New card-based interface is always visible
+  $("exercise_form")
+    .classList.remove("hidden");
 
-  const entryType = entryTypeSelect.value;
+  // Old standalone climbing form stays unused
+  $("climb_form")
+    .classList.add("hidden");
 
-  $("exercise_form").classList.toggle(
-    "hidden",
-    entryType !== "exercise"
-  );
+  // Update every existing card
+  document
+    .querySelectorAll(".exercise-block")
+    .forEach(exerciseBlock => {
+      updateEntryBlockType(
+        exerciseBlock
+      );
+    });
 
-  $("climb_form").classList.toggle(
-    "hidden",
-    entryType !== "route" &&
-    entryType !== "boulder"
-  );
-
-  updateGradeOptions();
-  updateClimbMaxVisibility();
+  // Adapt Add button label
+  $("add_exercise_block").textContent =
+    sessionType === "C"
+      ? "+ Add entry"
+      : "+ Add exercise";
 }
 
 function saveExerciseMax() {
@@ -1420,11 +1643,6 @@ $("change_climb_max").addEventListener("click", () => {
     updateEntryVisibility
   );
 
-  $("entry_type").addEventListener(
-    "change",
-    updateEntryVisibility
-  );
-
   $("add_row").addEventListener(
     "click",
     addRow
@@ -1451,10 +1669,8 @@ $("change_climb_max").addEventListener("click", () => {
   $("date").value =
     new Date().toISOString().slice(0, 10);
 
-  updateGradeOptions();
   updateEntryVisibility();
   updateBodyweightDisplay();
-  loadMaxGrades();
   renderTable();
   if ("serviceWorker" in navigator) {
   navigator.serviceWorker.register("./service-worker.js", {
