@@ -187,7 +187,7 @@ function addExerciseBlock() {
     </button>
 
 
-    <label>
+  <label class="exercise_finger_rpe_wrap hidden">
         Finger RPE (1st set)
         <select class="exercise_finger_rpe">
           <option value="1" selected>1</option>
@@ -1792,6 +1792,9 @@ function addRow() {
           ".exercise_rpe"
         ).value;
 
+      const isFingerBlock =
+      block === "Fingers";
+
       const frpe =
       isFingerBlock
         ? entryBlock.querySelector(
@@ -1802,9 +1805,6 @@ function addRow() {
         entryBlock.querySelector(
           ".exercise_comment"
         ).value;
-
-      const isFingerBlock =
-        block === "Fingers";
 
       const activeStrength =
         isFingerBlock
