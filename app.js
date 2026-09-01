@@ -27,7 +27,7 @@ const COLUMNS = [
   "entry_type", "block", "exercise", "unilateral",
   "side", "strength_intensity_range",
   "custom_strength_intensity", "explosive_strength", "active_strength",
-  "grip_type", "sets", "rep", "external_load",
+  "grip_type", "edge_size_mm", "sets", "rep", "external_load",
   "grade", "style", "length", "attempts", "mode", "done", "rpe", "frpe",
   "entry_comment"
 ];
@@ -69,11 +69,73 @@ function addExerciseBlock() {
         <select class="exercise_select"></select>
       </label>
 
+</div>
 
+    <label class="checkbox-label">
+      <input
+        class="exercise_unilateral"
+        type="checkbox"
+      />
+      <span>Unilateral</span>
+    </label>
 
-    </div>
+    <label class="checkbox-label">
+      <input
+        class="exercise_explosive"
+        type="checkbox"
+      />
+      <span>Explosive strength</span>
+    </label>
 
-<div class="exercise_max_section">
+    <div class="exercise_finger_options hidden">
+
+      <label class="checkbox-label">
+        <input
+          class="exercise_active_strength"
+          type="checkbox"
+        />
+        <span>Active strength</span>
+      </label>
+
+      <label>
+        Grip type
+        <select class="exercise_grip_type">
+          <option value="half_crimp">Half crimp</option>
+          <option value="open_hand">Open hand</option>
+          <option value="three_finger_drag">Three-finger drag</option>
+          <option value="two_finger_pocket">Two-finger pocket</option>
+          <option value="mono_pocket">Mono pocket</option>
+          <option value="full_range">Full range</option>
+        </select>
+      </label>
+
+    <label>
+      Edge size
+      <select class="exercise_edge_size">
+        <option value="10">10 mm</option>
+        <option value="15">15 mm</option>
+        <option value="20" selected>20 mm</option>
+        <option value="25">25 mm</option>
+        <option value="30">30 mm</option>
+        <option value="custom">Custom</option>
+      </select>
+    </label>
+
+    <label class="exercise_custom_edge_wrap hidden">
+      Custom edge size (mm)
+      <input
+        class="exercise_custom_edge_size"
+        type="number"
+        inputmode="decimal"
+        min="1"
+        step="0.5"
+        placeholder="e.g. 18"
+      />
+    </label>
+    
+  </div>
+
+    <div class="exercise_max_section">
 
   <div class="exercise_max_display hidden">
     <span class="exercise_max_text"></span>
@@ -135,49 +197,11 @@ function addExerciseBlock() {
 
     </div>
 
-  </div>
+    </div>
 
 </div>
 
-    <label class="checkbox-label">
-      <input
-        class="exercise_unilateral"
-        type="checkbox"
-      />
-      <span>Unilateral</span>
-    </label>
-
-    <label class="checkbox-label">
-      <input
-        class="exercise_explosive"
-        type="checkbox"
-      />
-      <span>Explosive strength</span>
-    </label>
-
-    <div class="exercise_finger_options hidden">
-
-      <label class="checkbox-label">
-        <input
-          class="exercise_active_strength"
-          type="checkbox"
-        />
-        <span>Active strength</span>
-      </label>
-
-      <label>
-        Grip type
-        <select class="exercise_grip_type">
-          <option value="half_crimp">Half crimp</option>
-          <option value="open_hand">Open hand</option>
-          <option value="three_finger_drag">Three-finger drag</option>
-          <option value="two_finger_pocket">Two-finger pocket</option>
-          <option value="mono_pocket">Mono pocket</option>
-        </select>
-      </label>
-    </div>
-
-    <div class="exercise_set_blocks"></div>
+<div class="exercise_set_blocks"></div>
 
     <button
       type="button"
@@ -361,10 +385,39 @@ function getExerciseKey(exerciseBlock) {
   const exerciseData =
     EXERCISE_CATALOG[exerciseName];
 
-  return (
+  const baseKey =
     exerciseData?.exercise_id ||
-    exerciseName
-  );
+    exerciseName;
+
+  const block =
+    exerciseBlock
+      .querySelector(".exercise_block_select")
+      .value;
+
+  // Normal exercises keep their normal key.
+  if (block !== "Fingers") {
+    return baseKey;
+  }
+
+  const gripType =
+    exerciseBlock
+      .querySelector(".exercise_grip_type")
+      .value;
+
+  const edgeSelect =
+    exerciseBlock
+      .querySelector(".exercise_edge_size");
+
+  const customEdge =
+    exerciseBlock
+      .querySelector(".exercise_custom_edge_size");
+
+  const edgeSize =
+    edgeSelect.value === "custom"
+      ? customEdge.value.trim()
+      : edgeSelect.value;
+
+  return `${baseKey}__${gripType}__${edgeSize}mm`;
 }
 
 function updateExerciseMaxDisplayForBlock(
@@ -543,6 +596,54 @@ function saveExerciseMaxUnilateralForBlock(
 
 function initializeExerciseBlock(exerciseBlock) {
   exerciseBlock
+  .querySelector(".exercise_grip_type")
+  .addEventListener("change", () => {
+    updateExerciseMaxDisplayForBlock(
+      exerciseBlock
+    );
+  });
+
+const edgeSizeSelect =
+  exerciseBlock.querySelector(
+    ".exercise_edge_size"
+  );
+
+const customEdgeWrap =
+  exerciseBlock.querySelector(
+    ".exercise_custom_edge_wrap"
+  );
+
+const customEdgeInput =
+  exerciseBlock.querySelector(
+    ".exercise_custom_edge_size"
+  );
+
+edgeSizeSelect.addEventListener(
+  "change",
+  () => {
+    const isCustom =
+      edgeSizeSelect.value === "custom";
+
+    customEdgeWrap.classList.toggle(
+      "hidden",
+      !isCustom
+    );
+
+    updateExerciseMaxDisplayForBlock(
+      exerciseBlock
+    );
+  }
+);
+
+customEdgeInput.addEventListener(
+  "input",
+  () => {
+    updateExerciseMaxDisplayForBlock(
+      exerciseBlock
+    );
+  }
+);
+  exerciseBlock
   .querySelector(".save_exercise_max")
   .addEventListener(
     "click",
@@ -663,7 +764,17 @@ exerciseBlock
   exerciseBlock
     .querySelector(".exercise_grip_type")
     .value = "half_crimp";
+    exerciseBlock
+  .querySelector(".exercise_edge_size")
+  .value = "20";
 
+  exerciseBlock
+    .querySelector(".exercise_custom_edge_size")
+    .value = "";
+
+  exerciseBlock
+    .querySelector(".exercise_custom_edge_wrap")
+    .classList.add("hidden");
   exerciseBlock
     .querySelector(".exercise_rpe")
     .value = "1";
@@ -746,7 +857,9 @@ exerciseBlock
     .querySelector(".add_set_block")
     .addEventListener("click", () => {
       addSetBlockToExercise(
-        exerciseBlock
+        exerciseBlock,
+        false,
+        true
       );
     });
 
@@ -912,9 +1025,21 @@ function updateEntryBlockType(exerciseBlock) {
 
 function addSetBlockToExercise(
   exerciseBlock,
-  useDefaults = true
+  useDefaults = true,
+  copyPrevious = false
 ) {
 
+  const container =
+  exerciseBlock.querySelector(
+    ".exercise_set_blocks"
+  );
+
+const previousBlock =
+  copyPrevious
+    ? container.querySelector(
+        ".set-block:last-child"
+      )
+    : null;
   const exerciseName =
   exerciseBlock
     .querySelector(".exercise_select")
@@ -940,7 +1065,7 @@ const defaultReps =
 
   const div = document.createElement("div");
   div.className = "set-block";
-
+  
   div.innerHTML = `
     <input
       class="block_sets"
@@ -1041,6 +1166,37 @@ const defaultReps =
     div.querySelector(
       ".block_custom_intensity"
     );
+
+    if (previousBlock) {
+  div.querySelector(".block_sets").value =
+    previousBlock.querySelector(".block_sets").value;
+
+  div.querySelector(".block_rep").value =
+    previousBlock.querySelector(".block_rep").value;
+
+  div.querySelector(".block_load").value =
+    previousBlock.querySelector(".block_load").value;
+
+  const previousIntensity =
+    previousBlock.querySelector(
+      ".block_intensity_range"
+    ).value;
+
+  intensitySelect.value = previousIntensity;
+
+  customInput.value =
+    previousBlock.querySelector(
+      ".block_custom_intensity"
+    ).value;
+
+  div.querySelector(".block_side").value =
+    previousBlock.querySelector(".block_side").value;
+
+  customInput.classList.toggle(
+    "hidden",
+    previousIntensity !== "custom"
+  );
+}
 
   intensitySelect.addEventListener(
     "change",
@@ -1819,6 +1975,21 @@ function addRow() {
               ".exercise_grip_type"
             ).value
           : "";
+      
+       const edgeSize =
+        isFingerBlock
+          ? (
+              entryBlock.querySelector(
+                ".exercise_edge_size"
+              ).value === "custom"
+                ? entryBlock.querySelector(
+                    ".exercise_custom_edge_size"
+                  ).value
+                : entryBlock.querySelector(
+                    ".exercise_edge_size"
+                  ).value
+            )
+          : "";
 
       const exerciseData =
         EXERCISE_CATALOG[exercise] || {};
@@ -1918,7 +2089,9 @@ function addRow() {
 
         row.grip_type =
           gripType;
-
+          
+        row.edge_size_mm =
+          edgeSize;
         rows.push(row);
       });
 
