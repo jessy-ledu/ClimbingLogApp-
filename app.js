@@ -23,12 +23,12 @@ const BOULDER_GRADES = [
 const COLUMNS = [
   "session_id", "date", "climb_type", "grade",  "max_grade", "max_strength",  "max_grade_system", 
   "duration_min", "site", "session_type",
-  "session_rpe", "focus", "focus_level", "comments",   "bodyweight",
+  "session_rpe", "finger_session_rpe", "focus", "focus_level", "comments",   "bodyweight",
   "entry_type", "block", "exercise", "unilateral",
   "side", "strength_intensity_range",
   "custom_strength_intensity", "explosive_strength", "active_strength",
   "grip_type", "sets", "rep", "external_load",
-  "grade", "style", "length", "attempts", "mode", "done", "rpe",
+  "grade", "style", "length", "attempts", "mode", "done", "rpe", "frpe",
   "entry_comment"
 ];
 
@@ -73,7 +73,71 @@ function addExerciseBlock() {
 
     </div>
 
-    <div class="exercise_max_section"></div>
+<div class="exercise_max_section">
+
+  <div class="exercise_max_display hidden">
+    <span class="exercise_max_text"></span>
+
+    <button
+      type="button"
+      class="change_exercise_max"
+    >
+      Change
+    </button>
+  </div>
+
+  <div class="exercise_max_editor">
+
+    <div class="exercise_max_bilateral_editor">
+      <label>
+        Maximum strength
+        <input
+          class="exercise_max_strength"
+          type="text"
+          placeholder="e.g. 40 kg, BW, BW+20"
+        />
+      </label>
+
+      <button
+        type="button"
+        class="save_exercise_max"
+      >
+        Save maximum strength
+      </button>
+    </div>
+
+    <div class="exercise_max_unilateral_editor hidden">
+
+      <label>
+        Maximum strength — Left
+        <input
+          class="exercise_max_left"
+          type="text"
+          placeholder="e.g. 30 kg, BW+10"
+        />
+      </label>
+
+      <label>
+        Maximum strength — Right
+        <input
+          class="exercise_max_right"
+          type="text"
+          placeholder="e.g. 30 kg, BW+10"
+        />
+      </label>
+
+      <button
+        type="button"
+        class="save_exercise_max_unilateral"
+      >
+        Save left / right maximum
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
 
     <label class="checkbox-label">
       <input
@@ -111,7 +175,6 @@ function addExerciseBlock() {
           <option value="mono_pocket">Mono pocket</option>
         </select>
       </label>
-
     </div>
 
     <div class="exercise_set_blocks"></div>
@@ -124,10 +187,25 @@ function addExerciseBlock() {
     </button>
 
 
-
+    <label>
+        Finger RPE (1st set)
+        <select class="exercise_finger_rpe">
+          <option value="1" selected>1</option>
+          <option>1</option>
+          <option>2</option>
+          <option>3</option>
+          <option>4</option>
+          <option>5</option>
+          <option>6</option>
+          <option>7</option>
+          <option>8</option>
+          <option>9</option>
+          <option>10</option>
+        </select>
+    </label>
     
     <label>
-      RPE (1st set)
+      RPE (1st set, exluding ramp up sets)
       <select class="exercise_rpe">
         <option value="1" selected>1</option>
         <option>1</option>
@@ -200,7 +278,7 @@ function addExerciseBlock() {
   </label>
 
   <label>
-    Mode
+    Mode for 1st attempt
     <select class="entry_mode">
       <option value="F">Flash</option>
       <option value="O">Onsight</option>
@@ -219,6 +297,22 @@ function addExerciseBlock() {
   <label>
     RPE (1st run)
     <select class="entry_climb_rpe">
+      <option value="1" selected>1</option>
+      <option>2</option>
+      <option>3</option>
+      <option>4</option>
+      <option>5</option>
+      <option>6</option>
+      <option>7</option>
+      <option>8</option>
+      <option>9</option>
+      <option>10</option>
+    </select>
+  </label>
+
+  <label>
+    FRPE (finger, 1st run)
+    <select class="entry_climb_frpe">
       <option value="1" selected>1</option>
       <option>2</option>
       <option>3</option>
@@ -258,7 +352,262 @@ function addExerciseBlock() {
   initializeExerciseBlock(exerciseBlock);
 }
 
+function getExerciseKey(exerciseBlock) {
+  const exerciseName =
+    exerciseBlock
+      .querySelector(".exercise_select")
+      .value;
+
+  const exerciseData =
+    EXERCISE_CATALOG[exerciseName];
+
+  return (
+    exerciseData?.exercise_id ||
+    exerciseName
+  );
+}
+
+function updateExerciseMaxDisplayForBlock(
+  exerciseBlock
+) {
+  const exerciseKey =
+    getExerciseKey(exerciseBlock);
+
+  if (!exerciseKey) return;
+
+  const maxes =
+    loadExerciseMaxes();
+
+  const saved =
+    maxes[exerciseKey] || {
+      bilateral: "",
+      left: "",
+      right: ""
+    };
+
+  const unilateral =
+    exerciseBlock
+      .querySelector(".exercise_unilateral")
+      .checked;
+
+  const display =
+    exerciseBlock.querySelector(
+      ".exercise_max_display"
+    );
+
+  const editor =
+    exerciseBlock.querySelector(
+      ".exercise_max_editor"
+    );
+
+  const bilateralEditor =
+    exerciseBlock.querySelector(
+      ".exercise_max_bilateral_editor"
+    );
+
+  const unilateralEditor =
+    exerciseBlock.querySelector(
+      ".exercise_max_unilateral_editor"
+    );
+
+  const text =
+    exerciseBlock.querySelector(
+      ".exercise_max_text"
+    );
+
+  if (unilateral) {
+    exerciseBlock
+      .querySelector(".exercise_max_left")
+      .value = saved.left || "";
+
+    exerciseBlock
+      .querySelector(".exercise_max_right")
+      .value = saved.right || "";
+
+    const complete =
+      saved.left !== "" &&
+      saved.right !== "";
+
+    if (complete) {
+      text.textContent =
+        `Left: ${saved.left} · Right: ${saved.right}`;
+
+      display.classList.remove("hidden");
+      editor.classList.add("hidden");
+    } else {
+      display.classList.add("hidden");
+      editor.classList.remove("hidden");
+
+      bilateralEditor.classList.add("hidden");
+      unilateralEditor.classList.remove("hidden");
+    }
+
+  } else {
+    exerciseBlock
+      .querySelector(".exercise_max_strength")
+      .value = saved.bilateral || "";
+
+    if (saved.bilateral !== "") {
+      text.textContent =
+        `Max: ${saved.bilateral}`;
+
+      display.classList.remove("hidden");
+      editor.classList.add("hidden");
+    } else {
+      display.classList.add("hidden");
+      editor.classList.remove("hidden");
+
+      unilateralEditor.classList.add("hidden");
+      bilateralEditor.classList.remove("hidden");
+    }
+  }
+}
+
+function saveExerciseMaxForBlock(
+  exerciseBlock
+) {
+  const exerciseKey =
+    getExerciseKey(exerciseBlock);
+
+  if (!exerciseKey) return;
+
+  const maxes =
+    loadExerciseMaxes();
+
+  const existing =
+    maxes[exerciseKey] || {
+      bilateral: "",
+      left: "",
+      right: ""
+    };
+
+  existing.bilateral =
+    exerciseBlock
+      .querySelector(".exercise_max_strength")
+      .value
+      .trim();
+
+  maxes[exerciseKey] = existing;
+
+  localStorage.setItem(
+    EXERCISE_MAXES_KEY,
+    JSON.stringify(maxes)
+  );
+
+  updateExerciseMaxDisplayForBlock(
+    exerciseBlock
+  );
+}
+
+function saveExerciseMaxUnilateralForBlock(
+  exerciseBlock
+) {
+  const exerciseKey =
+    getExerciseKey(exerciseBlock);
+
+  if (!exerciseKey) return;
+
+  const maxes =
+    loadExerciseMaxes();
+
+  const existing =
+    maxes[exerciseKey] || {
+      bilateral: "",
+      left: "",
+      right: ""
+    };
+
+  existing.left =
+    exerciseBlock
+      .querySelector(".exercise_max_left")
+      .value
+      .trim();
+
+  existing.right =
+    exerciseBlock
+      .querySelector(".exercise_max_right")
+      .value
+      .trim();
+
+  maxes[exerciseKey] = existing;
+
+  localStorage.setItem(
+    EXERCISE_MAXES_KEY,
+    JSON.stringify(maxes)
+  );
+
+  updateExerciseMaxDisplayForBlock(
+    exerciseBlock
+  );
+}
+
 function initializeExerciseBlock(exerciseBlock) {
+  exerciseBlock
+  .querySelector(".save_exercise_max")
+  .addEventListener(
+    "click",
+    () => {
+      saveExerciseMaxForBlock(
+        exerciseBlock
+      );
+    }
+  );
+
+exerciseBlock
+  .querySelector(
+    ".save_exercise_max_unilateral"
+  )
+  .addEventListener(
+    "click",
+    () => {
+      saveExerciseMaxUnilateralForBlock(
+        exerciseBlock
+      );
+    }
+  );
+
+exerciseBlock
+  .querySelector(".change_exercise_max")
+  .addEventListener(
+    "click",
+    () => {
+      const display =
+        exerciseBlock.querySelector(
+          ".exercise_max_display"
+        );
+
+      const editor =
+        exerciseBlock.querySelector(
+          ".exercise_max_editor"
+        );
+
+      display.classList.add("hidden");
+      editor.classList.remove("hidden");
+
+      const unilateral =
+        exerciseBlock
+          .querySelector(".exercise_unilateral")
+          .checked;
+
+      exerciseBlock
+        .querySelector(
+          ".exercise_max_bilateral_editor"
+        )
+        .classList.toggle(
+          "hidden",
+          unilateral
+        );
+
+      exerciseBlock
+        .querySelector(
+          ".exercise_max_unilateral_editor"
+        )
+        .classList.toggle(
+          "hidden",
+          !unilateral
+        );
+    }
+  );
   const blockSelect =
     exerciseBlock.querySelector(".exercise_block_select");
 
@@ -356,15 +705,27 @@ function initializeExerciseBlock(exerciseBlock) {
     true
   );
 }
-  blockSelect.addEventListener(
-    "change",
-    updateExerciseList
-  );
+
+blockSelect.addEventListener(
+  "change",
+  () => {
+    updateExerciseList();
+    resetExerciseInputs(exerciseBlock);
+
+    updateExerciseMaxDisplayForBlock(
+      exerciseBlock
+    );
+  }
+);
 
 exerciseSelect.addEventListener(
   "change",
   () => {
     resetExerciseInputs(exerciseBlock);
+
+    updateExerciseMaxDisplayForBlock(
+      exerciseBlock
+    );
   }
 );
 
@@ -389,13 +750,17 @@ exerciseBlock
       );
     });
 
-  exerciseBlock
-    .querySelector(".exercise_unilateral")
-    .addEventListener("change", () => {
-      updateExerciseBlockOptions(
-        exerciseBlock
-      );
-    });
+exerciseBlock
+  .querySelector(".exercise_unilateral")
+  .addEventListener("change", () => {
+    updateExerciseBlockOptions(
+      exerciseBlock
+    );
+
+    updateExerciseMaxDisplayForBlock(
+      exerciseBlock
+    );
+  });
 
 updateExerciseList();
 
@@ -404,6 +769,10 @@ addSetBlockToExercise(
 );
 
 updateEntryBlockType(
+  exerciseBlock
+);
+
+updateExerciseMaxDisplayForBlock(
   exerciseBlock
 );
 }
@@ -427,6 +796,16 @@ function updateExerciseBlockOptions(exerciseBlock) {
     "hidden",
     block !== "Fingers"
   );
+
+  const fingerRpeWrap =
+  exerciseBlock.querySelector(
+    ".exercise_finger_rpe_wrap"
+  );
+
+fingerRpeWrap.classList.toggle(
+  "hidden",
+  block !== "Fingers"
+);
 
   exerciseBlock
     .querySelectorAll(".block_side")
@@ -544,6 +923,11 @@ function addSetBlockToExercise(
 const exerciseData =
   EXERCISE_CATALOG[exerciseName] || {};
 
+  const defaultIntensity =
+  exerciseData
+    .default_intensity_range_percent_1rm
+    ?.trim() || "";
+
 const defaultSets =
   useDefaults
     ? exerciseData.sets ?? ""
@@ -580,15 +964,15 @@ const defaultReps =
       placeholder="Load"
     >
 
-    <select class="block_intensity_range">
-      <option value="<60">&lt;60%</option>
-      <option value="60-70">60–70%</option>
-      <option value="70-80">70–80%</option>
-      <option value="80-90">80–90%</option>
-      <option value="90-100">90–100%</option>
-      <option value=">100">&gt;100%</option>
-      <option value="custom">Custom</option>
-    </select>
+<select class="block_intensity_range">
+  <option value="<60">&lt;60% RM</option>
+  <option value="60-70">60–70% RM</option>
+  <option value="70-80">70–80% RM</option>
+  <option value="80-90">80–90% RM</option>
+  <option value="90-100">90–100% RM</option>
+  <option value=">100">&gt;100% RM</option>
+  <option value="custom">Custom</option>
+</select>
 
     <input
       class="block_custom_intensity hidden"
@@ -625,6 +1009,33 @@ const defaultReps =
     div.querySelector(
       ".block_intensity_range"
     );
+
+    if (defaultIntensity) {
+  const existingOption =
+    [...intensitySelect.options]
+      .some(option =>
+        option.value === defaultIntensity
+      );
+
+  if (!existingOption) {
+    const option =
+      document.createElement("option");
+
+    option.value = defaultIntensity;
+    option.textContent =
+      `${defaultIntensity} — Default`;
+
+    intensitySelect.insertBefore(
+      option,
+      intensitySelect.querySelector(
+        'option[value="custom"]'
+      )
+    );
+  }
+
+  intensitySelect.value =
+    defaultIntensity;
+}
 
   const customInput =
     div.querySelector(
@@ -1067,6 +1478,7 @@ function getHeader() {
     session_type: $("session_type").value,
     bodyweight: localStorage.getItem(BODYWEIGHT_KEY) || "",
     session_rpe: $("session_rpe").value,
+    finger_session_rpe: $("finger_session_rpe").value,
     focus: $("focus").value,
     focus_level: $("focus_level").value,
     comments: $("comments").value
@@ -1248,22 +1660,38 @@ function updateAllSetBlockIntensities() {
 
 function addRow() {
   const header = getHeader();
-  const entryType = $("entry_type").value;
 
-  // =========================
-  // EXERCISES
-  // =========================
+  const entryBlocks =
+    document.querySelectorAll(".exercise-block");
 
-  if (entryType === "exercise") {
+  if (entryBlocks.length === 0) {
+    alert("Add at least one entry.");
+    return;
+  }
 
-    const exerciseBlocks =
-      document.querySelectorAll(".exercise-block");
+  // =====================================
+  // VALIDATE ALL ENTRIES BEFORE SAVING
+  // =====================================
 
-    // Validate everything BEFORE saving anything.
-    for (const exerciseBlock of exerciseBlocks) {
+  for (const entryBlock of entryBlocks) {
+
+    const sessionType =
+      $("session_type").value;
+
+    const entryType =
+      sessionType === "G"
+        ? "exercise"
+        : entryBlock.querySelector(
+            ".local_entry_type"
+          ).value;
+
+    // Exercise validation
+    if (entryType === "exercise") {
 
       const setBlocks =
-        exerciseBlock.querySelectorAll(".set-block");
+        entryBlock.querySelectorAll(
+          ".set-block"
+        );
 
       for (const setBlock of setBlocks) {
 
@@ -1284,41 +1712,94 @@ function addRow() {
           alert(
             "Enter a custom intensity value for every Custom set block."
           );
+
           return;
         }
       }
     }
 
-    // Everything valid → create dataframe rows.
-    exerciseBlocks.forEach(exerciseBlock => {
+    // Climbing validation
+    if (
+      entryType === "route" ||
+      entryType === "boulder"
+    ) {
+
+      const savedMax =
+        entryType === "boulder"
+          ? localStorage.getItem(
+              MAX_BOULDER_GRADE_KEY
+            ) || ""
+          : localStorage.getItem(
+              MAX_ROUTE_GRADE_KEY
+            ) || "";
+
+      if (!savedMax) {
+        alert(
+          entryType === "boulder"
+            ? "Please save your maximum boulder grade first."
+            : "Please save your maximum route grade first."
+        );
+
+        return;
+      }
+    }
+  }
+
+  // =====================================
+  // CREATE ROWS
+  // =====================================
+
+  entryBlocks.forEach(entryBlock => {
+
+    const sessionType =
+      $("session_type").value;
+
+    const entryType =
+      sessionType === "G"
+        ? "exercise"
+        : entryBlock.querySelector(
+            ".local_entry_type"
+          ).value;
+
+    // ===================================
+    // EXERCISE
+    // ===================================
+
+    if (entryType === "exercise") {
 
       const block =
-        exerciseBlock.querySelector(
+        entryBlock.querySelector(
           ".exercise_block_select"
         ).value;
 
       const exercise =
-        exerciseBlock.querySelector(
+        entryBlock.querySelector(
           ".exercise_select"
         ).value;
 
       const isUnilateral =
-        exerciseBlock.querySelector(
+        entryBlock.querySelector(
           ".exercise_unilateral"
         ).checked;
 
       const explosive =
-        exerciseBlock.querySelector(
+        entryBlock.querySelector(
           ".exercise_explosive"
         ).checked;
 
       const rpe =
-        exerciseBlock.querySelector(
+        entryBlock.querySelector(
           ".exercise_rpe"
         ).value;
 
+      const frpe =
+      isFingerBlock
+        ? entryBlock.querySelector(
+            ".exercise_finger_rpe"
+          ).value
+        : "";
       const comment =
-        exerciseBlock.querySelector(
+        entryBlock.querySelector(
           ".exercise_comment"
         ).value;
 
@@ -1327,23 +1808,23 @@ function addRow() {
 
       const activeStrength =
         isFingerBlock
-          ? exerciseBlock.querySelector(
+          ? entryBlock.querySelector(
               ".exercise_active_strength"
             ).checked
           : false;
 
       const gripType =
         isFingerBlock
-          ? exerciseBlock.querySelector(
+          ? entryBlock.querySelector(
               ".exercise_grip_type"
             ).value
           : "";
 
       const exerciseData =
-        EXERCISE_CATALOG[exercise];
+        EXERCISE_CATALOG[exercise] || {};
 
       const exerciseKey =
-        exerciseData?.exercise_id ||
+        exerciseData.exercise_id ||
         exercise;
 
       const exerciseMaxes =
@@ -1353,13 +1834,13 @@ function addRow() {
         exerciseMaxes[exerciseKey] || {};
 
       const setBlocks =
-        exerciseBlock.querySelectorAll(
+        entryBlock.querySelectorAll(
           ".set-block"
         );
 
       setBlocks.forEach(setBlock => {
 
-        let row =
+        const row =
           Object.fromEntries(
             COLUMNS.map(c => [c, ""])
           );
@@ -1370,7 +1851,8 @@ function addRow() {
         row.block = block;
         row.exercise = exercise;
 
-        row.unilateral = isUnilateral;
+        row.unilateral =
+          isUnilateral;
 
         row.side =
           isUnilateral
@@ -1426,7 +1908,10 @@ function addRow() {
           ).value;
 
         row.rpe = rpe;
-        row.entry_comment = comment;
+        row.frpe = frpe;
+
+        row.entry_comment =
+          comment;
 
         row.active_strength =
           activeStrength;
@@ -1436,86 +1921,111 @@ function addRow() {
 
         rows.push(row);
       });
-    });
+
+      return;
+    }
+
+    // ===================================
+    // ROUTE / BOULDER
+    // ===================================
+
+    const row =
+      Object.fromEntries(
+        COLUMNS.map(c => [c, ""])
+      );
+
+    Object.assign(row, header);
+
+    row.entry_type =
+      entryType;
+
+    row.climb_type =
+      entryType;
+
+    row.exercise =
+      entryType === "boulder"
+        ? "Bloc"
+        : "Route";
+
+    row.grade =
+      entryBlock.querySelector(
+        ".entry_grade"
+      ).value;
+
+    row.max_grade =
+      entryType === "boulder"
+        ? localStorage.getItem(
+            MAX_BOULDER_GRADE_KEY
+          ) || ""
+        : localStorage.getItem(
+            MAX_ROUTE_GRADE_KEY
+          ) || "";
+
+    row.max_grade_system =
+      entryType === "boulder"
+        ? "fontainebleau"
+        : "french";
+
+    row.style =
+      entryBlock.querySelector(
+        ".entry_style"
+      ).value;
+
+    row.length =
+      entryBlock.querySelector(
+        ".entry_length"
+      ).value;
+
+    row.attempts =
+      entryBlock.querySelector(
+        ".entry_attempts"
+      ).value;
+
+    row.rep =
+      row.attempts;
+
+    row.mode =
+      entryBlock.querySelector(
+        ".entry_mode"
+      ).value;
+
+    row.done =
+      entryBlock.querySelector(
+        ".entry_done"
+      ).value;
+
+    row.rpe =
+      entryBlock.querySelector(
+        ".entry_climb_rpe"
+      ).value;
+
+    row.frpe =
+      entryBlock.querySelector(
+        ".entry_climb_frpe"
+      ).value;
+
+    row.entry_comment =
+      entryBlock.querySelector(
+        ".entry_climb_comment"
+      ).value;
+
+    rows.push(row);
+  });
+
+  // =====================================
+  // SAVE EVERYTHING
+  // =====================================
 
   saveRows();
   renderTable();
 
-  const exerciseContainer = $("exercise_blocks");
+  // Fresh entry area
+  const container =
+    $("exercise_blocks");
 
-  exerciseContainer.replaceChildren();
+  container.replaceChildren();
+
   addExerciseBlock();
-
-  $("exercise_form").classList.remove("hidden");
-
-  return;
-  }
-  // =========================
-  // ROUTE / BOULDER
-  // =========================
-
-  const row =
-    Object.fromEntries(
-      COLUMNS.map(c => [c, ""])
-    );
-
-  Object.assign(row, header);
-
-  row.entry_type = entryType;
-
-  const climbContext =
-    getClimbContext();
-
-  if (
-    !validateClimbMaxGrade(
-      climbContext
-    )
-  ) {
-    return;
-  }
-
-  row.exercise =
-    climbContext.climb_type === "boulder"
-      ? "Bloc"
-      : "Route";
-
-  row.climb_type =
-    climbContext.climb_type;
-
-  row.grade =
-    $("grade").value;
-
-  row.max_grade =
-    climbContext.max_grade;
-
-  row.max_grade_system =
-    climbContext.max_grade_system;
-
-  row.style =
-    $("style").value;
-
-  row.length =
-    $("length").value;
-
-  row.attempts =
-    $("attempts").value;
-
-  row.rep =
-    $("attempts").value;
-
-  row.mode =
-    $("mode").value;
-
-  row.done =
-    $("done").value;
-
-  row.rpe =
-    $("climb_rpe").value;
-
-  rows.push(row);
-
-  saveRows();
-  renderTable();
 }
 
 function escapeCSV(value) {
@@ -1536,7 +2046,14 @@ function exportCSV() {
   const url = URL.createObjectURL(blob);
   const a = document.createElement("a");
   a.href = url;
-  a.download = `climbing_log_${new Date().toISOString().slice(0,10)}.csv`;
+  
+  const sessionDate =
+  $("date").value ||
+  new Date().toISOString().slice(0, 10);
+
+  a.download =
+    `climbing_log_${sessionDate}.csv`;
+
   a.click();
   URL.revokeObjectURL(url);
 }
